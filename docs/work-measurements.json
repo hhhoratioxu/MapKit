@@ -1,0 +1,86 @@
+{
+  "scope": "Node/V8 synthetic work measurements; no live Apple request, native Loon, iPhone power or VPN stability measurement",
+  "upstreamCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
+  "node": "v22.23.3",
+  "repeatedManifestRequests": {
+    "executions": 100,
+    "withinTTL": true,
+    "upstreamHTTPCalls": 100,
+    "optimizedHTTPCalls": 1
+  },
+  "tileMerge": {
+    "sourceTiles": 5000,
+    "targetTiles": 5000,
+    "selectedStyles": 25,
+    "identicalResult": true,
+    "upstream": {
+      "medianMs": 94.46870000000013,
+      "samplesMs": [
+        103.16839799999997,
+        95.43973699999998,
+        93.58997600000004,
+        92.81468799999993,
+        91.44958000000008,
+        91.06433600000003,
+        99.68567100000007,
+        98.597759,
+        94.46870000000013
+      ],
+      "iterationsPerTrial": 20
+    },
+    "optimized": {
+      "medianMs": 5.695676000000049,
+      "samplesMs": [
+        16.44260599999984,
+        5.695676000000049,
+        5.584216999999853,
+        5.847702000000027,
+        5.579026999999996,
+        5.6028409999998985,
+        5.801344999999856,
+        5.582714000000124,
+        7.507355000000189
+      ],
+      "iterationsPerTrial": 20
+    }
+  },
+  "codecRoundtrip": {
+    "tiles": 3000,
+    "identicalKnownFieldBytes": true,
+    "upstream": {
+      "medianMs": 141.25713500000006,
+      "samplesMs": [
+        172.7694489999999,
+        164.04488800000013,
+        157.716905,
+        141.25713500000006,
+        139.92507100000012,
+        147.44144899999992,
+        135.1500269999999,
+        133.74550599999975,
+        134.05341199999975
+      ],
+      "iterationsPerTrial": 20
+    },
+    "optimized": {
+      "medianMs": 133.28520400000025,
+      "samplesMs": [
+        138.93096100000002,
+        139.61361099999976,
+        133.71469799999977,
+        132.1334469999997,
+        131.701728,
+        132.08938099999978,
+        132.5680010000001,
+        139.77552000000014,
+        133.28520400000025
+      ],
+      "iterationsPerTrial": 20
+    }
+  },
+  "optimizedBundleBytes": {
+    "request": 7970,
+    "response": 151641,
+    "defaults": 7257
+  }
+}

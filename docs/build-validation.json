@@ -1,0 +1,19 @@
+{
+  "version": "4.6.1-optimized.1",
+  "resourceRef": "optimized-v1",
+  "sourceCommit": "1c0bf4b148c60788af91cf9ef1ab3538f76f699e",
+  "upstreamCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
+  "node": "v22.23.3",
+  "schemaPackage": "1.1.3",
+  "lockfileSHA256": "f1c3b590f67c9cc7f3490406b6e0a08c0cf5994a46a0ee9a845c9ed0a4b7ba4f",
+  "checks": {
+    "compiledBundleScenarios": 12,
+    "configurationChecks": "native expressions, URL guards, typed parameters, pinned imports; real Loon parser unavailable",
+    "sizes": {
+      "request": 7970,
+      "response": 151641,
+      "defaults": 7257
+    },
+    "nativeDeviceAcceptance": "not performed"
+  }
+}

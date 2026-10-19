@@ -1,0 +1,46 @@
+#!name =  MapKit · 缓存与性能优化
+#!desc = 基于 NSRingo/MapKit；补充清单短时缓存、失败回退与受限处理。Loon 原生接口。
+#!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
+#!homepage = https://github.com/hhhoratioxu/MapKit
+#!icon = https://developer.apple.com/assets/elements/icons/maps/maps-128x128.png
+#!tag = iRingo,MapKit
+#!system = iOS,iPadOS,macOS
+#!system_version = 15
+#!loon_version = 3.5.1(983)
+#!date = 2026-10-20
+#!version = 4.6.1-optimized.1
+
+[Argument]
+CountryCode = select,"US","AUTO","CN","HK","TW","SG","JP","AU","GB","KR","CA","IE",type=string,tag=清单地区,desc=AUTO 保留 Apple 请求地区；KR 不包含独立韩国瓦片合成
+Environment = select,"AUTO","CN","XX",type=string,tag=公告环境
+Dispatcher = select,"AutoNavi","Apple","AUTO",type=string,tag=地点服务
+Directions = select,"AutoNavi","Apple","AUTO",type=string,tag=导航与 ETA
+RAP = select,"Apple","AutoNavi","AUTO",type=string,tag=评分和照片
+LocationShift = select,"AUTO","AutoNavi","Apple",type=string,tag=定位服务,desc=AUTO 沿用上游规则：watchOS 采用 Apple；其他系统采用高德
+Map = select,"CN","XX",type=string,tag=地图,desc=CN 中国版；XX 国际版
+Satellite2D = select,"CN","XX",type=string,tag=2D 卫星,desc=CN 中国版；XX 国际版
+Satellite3D = select,"XX","CN",type=string,tag=3D 卫星,desc=CN 中国版；XX 国际版
+Traffic = select,"CN","XX",type=string,tag=交通,desc=CN 中国版；XX 国际版
+POI = select,"CN","XX",type=string,tag=兴趣点,desc=CN 中国版；XX 国际版
+Flyover = select,"XX","CN",type=string,tag=俯瞰,desc=CN 中国版；XX 国际版
+Munin = select,"XX","CN",type=string,tag=四处看看,desc=CN 中国版；XX 国际版
+Road = select,"CN","XX",type=string,tag=道路,desc=CN 中国版；XX 国际版
+Earth = select,"CN","XX",type=string,tag=地球,desc=CN 中国版；XX 国际版
+Transit = select,"CN","XX",type=string,tag=公共交通,desc=CN 中国版；XX 国际版
+CacheTTL = input,3600,type=number,tag=补充清单缓存秒数,desc=0 每次重新查询；最大 86400 秒
+StaleHours = input,24,type=number,tag=补充清单可用小时数,desc=查询失败时使用有效旧清单的最长时间；最大 72 小时
+TimeoutMs = input,3500,type=number,tag=单次查询超时毫秒,desc=范围 500 至 6000；没有并行和自动重试
+Diagnostics = switch,false,type=boolean,tag=安全诊断,desc=仅输出固定结果类别
+
+[Rewrite]
+request if ${url} ~= /^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/ then request.header.del(["If-None-Match", "If-Modified-Since"])
+request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ then request.header.del(["If-None-Match", "If-Modified-Since"])
+
+[Script]
+request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}, ${CacheTTL}, ${StaleHours}, ${TimeoutMs}, ${Diagnostics}}) with timeout=8, tag="MapKit manifest request"
+request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}, ${CacheTTL}, ${StaleHours}, ${TimeoutMs}, ${Diagnostics}}) with timeout=8, tag="MapKit announcements"
+response if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1/Loon/script/response.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}, ${CacheTTL}, ${StaleHours}, ${TimeoutMs}, ${Diagnostics}}) with requires_body=true, binary_body_mode=true, timeout=8, tag="MapKit manifest response"
+response if ${url} ~= /^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1/Loon/script/defaults.bundle.js") with requires_body=true, timeout=5, tag="MapKit defaults"
+
+[MITM]
+hostname = configuration.ls.apple.com, gspe35-ssl.ls.apple.com, gspe35-ssl.ls.apple.cn

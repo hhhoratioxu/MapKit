@@ -27,7 +27,7 @@
 
 ## 验证
 
-回归测试、实际编译脚本的模拟 Loon 场景、生成配置检查、上游结果对比与工作量测量均可复现。包括 400 组瓦片合并布局对比，完整说明见 [验证与边界](docs/optimization.md)，原始数据见 [工作量测量](docs/work-measurements.json) 与 [构建记录](docs/build-validation.json)。
+本地与 [GitHub Actions 执行日志](https://github.com/hhhoratioxu/MapKit/actions/runs/39284257494) 均确认 **89 项回归测试、12 个编译后脚本场景通过**，包括 400 组瓦片合并布局对比。下载的六个运行资源与本地生成文件逐字节一致。验证过程和状态页差异记录见 [CI 验证记录](docs/ci-validation.json)。完整说明见 [验证与边界](docs/optimization.md)，原始数据见 [工作量测量](docs/work-measurements.json) 与 [构建记录](docs/build-validation.json)。
 
 脚本大小检查、Node/V8 测量与模拟接口测试不能代替真实 Loon 解析、iPhone 地图显示、耗电或 VPN 连续运行验收。真实设备验收尚未完成。
 

@@ -1,0 +1,18 @@
+{
+  "inspectedDate": "2026-10-20",
+  "sourceCommit": "1c0bf4b148c60788af91cf9ef1ab3538f76f699e",
+  "workflowRun": "https://github.com/hhhoratioxu/MapKit/actions/runs/39284257494",
+  "jobId": 118165610544,
+  "artifactId": 12202956326,
+  "artifactZipSHA256": "925be52d794bdf6ef4ceb5c3d9e01c6972c2b6c6abff46939beb8def4a48dfa5",
+  "evidence": "Downloaded complete job log and build artifact; verified test summary, build checks, source commit and identical local/runtime bytes.",
+  "regressionTests": { "passed": 89, "failed": 0 },
+  "compiledBundleScenarios": 12,
+  "differentialTileLayouts": 400,
+  "runtimeFilesByteMatched": 6,
+  "metadataStatusAtInspection": "queued",
+  "statusNote": "Run and job summary metadata still reported queued while the full completed execution log and finalized artifact were available. This record verifies the logged build/test steps, not a green summary status.",
+  "nativeLoonParser": "not available",
+  "iPhoneAcceptance": "not performed",
+  "powerAndVPNStability": "not measured"
+}
