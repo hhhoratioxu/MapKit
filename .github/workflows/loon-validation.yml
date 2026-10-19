@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -38,6 +39,9 @@ jobs:
       - name: Build native Loon scripts and plugin
         if: hashFiles('scripts/rollup-loon.config.mjs') != ''
         run: npm run build:loon
+      - name: Reproduce synthetic work measurements
+        if: hashFiles('scripts/measure-work.mjs') != ''
+        run: node scripts/measure-work.mjs
       - uses: actions/upload-artifact@v4
         if: hashFiles('Loon/script/MapKit.plugin') != ''
         with:
@@ -45,4 +49,5 @@ jobs:
           path: |
             Loon/script/
             docs/build-validation.json
+            docs/work-measurements.json
           if-no-files-found: error
