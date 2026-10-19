@@ -1,0 +1,16 @@
+MapKit Loon optimization fork, version 4.6.1-optimized.1
+Upstream: NSRingo/MapKit https://github.com/NSRingo/MapKit
+Original author: VirgilClyne and upstream contributors, Apache License 2.0.
+Upstream baseline: c9af737d97c0b3e26bc2f1083e36564da1b05ba4
+
+Modified by hhhoratioxu, 2026-10-20:
+- Native Loon request, defaults and manifest response entry points.
+- Bounded supplemental-manifest cache, timeout and failure recovery.
+- Preserve unrelated shared caches, unknown enums and protobuf fields.
+- In-place enum conversion and grouped tile-set merging.
+- Reproducible builds, regression checks and documentation.
+
+Original LICENSE, author attribution and Git history are preserved.
+The original @nsringo/mapkit 1.1.3 schema package is used without modification.
+Bundled @nsnanocat/util and @nsnanocat/xml: VirgilClyne, Apache-2.0.
+Protobuf runtime in the original schema: @protobuf-ts/runtime, Apache-2.0.

@@ -16,7 +16,7 @@ export default class GEOResourceManifest {
 		newRequest.url = newRequest.url.toString();
 		newRequest["binary-mode"] = true;
 		const response = await fetch(newRequest);
-		const rawBody = response.bodyBytes ? new Uint8Array(response.bodyBytes) : (response.body ?? new Uint8Array());
+		const rawBody = response.bodyBytes instanceof Uint8Array ? response.bodyBytes : response.bodyBytes ? new Uint8Array(response.bodyBytes) : (response.body ?? new Uint8Array());
 		Console.log("✅ Download");
 		return { status: response.status ?? response.statusCode ?? 0, eTag: response.headers?.Etag ?? response.headers?.etag, body: rawBody };
 	}
@@ -102,7 +102,6 @@ export default class GEOResourceManifest {
 		let result;
 		if (KV) result = await KV.setItem(`@iRingo.MapKit.Caches.${queryString}`, { eTag, base64 });
 		else {
-			result = Storage.setItem(`@iRingo.MapKit.Caches`, {});
 			result = Storage.setItem(`@iRingo.MapKit.Caches.${queryString}`, { eTag, base64 });
 		}
 		Console.log("✅ Set Cache");
@@ -128,7 +127,7 @@ export default class GEOResourceManifest {
 			let rawBody;
 			switch (true) {
 				case typeof globalThis.Buffer !== "undefined":
-					rawBody = new Uint8Array(globalThis.Buffer.from(cache.base64, "base64"));
+					rawBody = globalThis.Buffer.from(cache.base64, "base64");
 					break;
 				case typeof globalThis.atob === "function": {
 					const binary = globalThis.atob(cache.base64);
@@ -182,7 +181,7 @@ export default class GEOResourceManifest {
 			if (settingCountryCode === sourceCountryCode) tileStyles.push(...group);
 		}
 		const result = [...new Set(tileStyles.filter(tileStyle => typeof tileStyle === "string"))];
-		Console.info(`相对源地区 ${sourceCountryCode} 选入的 tileStyles: ${JSON.stringify(result)}`);
+		if (["INFO", "DEBUG", "ALL"].includes(Console.logLevel)) Console.info(`Selected source styles: ${JSON.stringify(result)}`);
 		Console.log("✅ Set TileStyles");
 		return result;
 	}
@@ -198,48 +197,27 @@ export default class GEOResourceManifest {
 	static tileSets(source = [], target = [], tileStyles = []) {
 		source = Array.isArray(source) ? source : [];
 		target = Array.isArray(target) ? target : [];
-		tileStyles = Array.isArray(tileStyles) ? tileStyles : [];
-		for (let index = tileStyles.length - 1; index >= 0; index--) {
-			if (typeof tileStyles[index] !== "string" || tileStyles.indexOf(tileStyles[index]) !== index) tileStyles.splice(index, 1);
-		}
-		const sourceTileStyles = [];
-		const targetTileStyles = [];
+		if (source === target) return target;
+		const styles = new Set((Array.isArray(tileStyles) ? tileStyles : []).filter(style => typeof style === "string"));
+		const groups = new Map();
 		for (const tile of source) {
-			if (typeof tile?.style === "string" && !sourceTileStyles.includes(tile.style)) sourceTileStyles.push(tile.style);
+			if (!styles.has(tile?.style)) continue;
+			if (!groups.has(tile.style)) groups.set(tile.style, []);
+			groups.get(tile.style).push(tile);
 		}
+		const emitted = new Set(),
+			result = [];
 		for (const tile of target) {
-			if (typeof tile?.style === "string" && !targetTileStyles.includes(tile.style)) targetTileStyles.push(tile.style);
-		}
-		const sourceExclusiveTileStyles = sourceTileStyles.filter(tileStyle => !targetTileStyles.includes(tileStyle));
-		const targetExclusiveTileStyles = targetTileStyles.filter(tileStyle => !sourceTileStyles.includes(tileStyle));
-		Console.info(`图块集合 source 拥有的 tileStyles: ${JSON.stringify(sourceTileStyles)}`);
-		Console.info(`图块集合 target 拥有的 tileStyles: ${JSON.stringify(targetTileStyles)}`);
-		Console.info(`图块集合 source 独占的 tileStyles: ${JSON.stringify(sourceExclusiveTileStyles)}`);
-		Console.info(`图块集合 target 独占的 tileStyles: ${JSON.stringify(targetExclusiveTileStyles)}`);
-		const modifiedTileStyles = [];
-		const unmodifiedTileStyles = [];
-		for (const tileStyle of tileStyles) {
-			if (source === target || !source.some(tile => tile?.style === tileStyle)) {
-				unmodifiedTileStyles.push(tileStyle);
-				continue;
+			const group = groups.get(tile?.style);
+			if (!group) result.push(tile);
+			else if (!emitted.has(tile.style)) {
+				for (const replacement of group) result.push(replacement);
+				emitted.add(tile.style);
 			}
-			let targetIndex = target.findIndex(tile => tile?.style === tileStyle);
-			if (targetIndex < 0) targetIndex = target.length;
-			for (let index = target.length - 1; index >= 0; index--) {
-				if (target[index]?.style === tileStyle) target.splice(index, 1);
-			}
-			for (let index = source.length - 1; index >= 0; index--) {
-				if (source[index]?.style === tileStyle) target.splice(targetIndex, 0, source[index]);
-			}
-			modifiedTileStyles.push(tileStyle);
 		}
-		const returnedTargetTileStyles = [];
-		for (const tile of target) {
-			if (typeof tile?.style === "string" && !returnedTargetTileStyles.includes(tile.style)) returnedTargetTileStyles.push(tile.style);
-		}
-		Console.info(`图块集合最终返回的 target tileStyles: ${JSON.stringify(returnedTargetTileStyles)}`);
-		Console.info(`图块集合已修改的 tileStyles: ${JSON.stringify(modifiedTileStyles)}`);
-		Console.info(`图块集合未修改的 tileStyles: ${JSON.stringify(unmodifiedTileStyles)}`);
+		for (const style of styles) if (!emitted.has(style)) for (const tile of groups.get(style) ?? []) result.push(tile);
+		target.length = result.length;
+		for (let i = 0; i < result.length; i++) target[i] = result[i];
 		return target;
 	}
 

@@ -1,5 +1,6 @@
 {
 	"name": "@iringo/geoservices",
+	"version": "4.6.1-optimized.1",
 	"organizationName": " iRingo",
 	"displayName": " iRingo: 🗺️ Maps",
 	"description": "自定义 Maps app\n添加国际版功能\n自定义服务版本",
@@ -19,13 +20,16 @@
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/NSRingo/GeoServices.git"
+		"url": "https://github.com/hhhoratioxu/MapKit.git"
 	},
 	"directories": {
 		"example": "example"
 	},
 	"type": "module",
 	"scripts": {
+		"test": "node --test --test-concurrency=1 test/*.test.js",
+		"build:loon": "rollup -c scripts/rollup-loon.config.mjs && node scripts/build-loon.mjs",
+		"verify:loon": "node scripts/verify-loon.mjs",
 		"dev": "npm-run-all --parallel build:dev build:dev-args",
 		"dev:pages": "npx wrangler pages dev --port 8787",
 		"dev:workers": "npx wrangler dev -c wrangler.workers.jsonc",
