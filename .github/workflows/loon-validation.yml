@@ -1,0 +1,48 @@
+name: Loon optimization validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/loon-optimization]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+      - name: Archive original schema for local regression work
+        run: tar -czf "$RUNNER_TEMP/mapkit-schema.tgz" -C node_modules/@nsringo/mapkit .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mapkit-locked-schema
+          path: ${{ runner.temp }}/mapkit-schema.tgz
+          retention-days: 1
+          if-no-files-found: error
+      - name: Run regression tests
+        run: node --test --test-concurrency=1 test/*.test.js
+      - name: Build native Loon scripts and plugin
+        if: hashFiles('scripts/rollup-loon.config.mjs') != ''
+        run: npm run build:loon
+      - uses: actions/upload-artifact@v4
+        if: hashFiles('Loon/script/MapKit.plugin') != ''
+        with:
+          name: mapkit-loon
+          path: |
+            Loon/script/
+            docs/build-validation.json
+          if-no-files-found: error
