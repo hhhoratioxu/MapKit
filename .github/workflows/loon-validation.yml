@@ -43,7 +43,7 @@ jobs:
         if: hashFiles('scripts/measure-work.mjs') != ''
         run: node scripts/measure-work.mjs
       - uses: actions/upload-artifact@v4
-        if: hashFiles('Loon/script/MapKit.plugin') != ''
+        if: hashFiles('Loon/script/MapKit.lpx') != ''
         with:
           name: mapkit-loon
           path: |
