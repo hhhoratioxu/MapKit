@@ -4,7 +4,7 @@
 
 与本账号 WeatherKit 的发布方式一致，提供独立仓库和一个 Loon 安装入口。
 
-[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.plugin) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.plugin) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1/Loon/script/MapKit.plugin)
+[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.lpx) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.lpx) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1-lpx/Loon/script/MapKit.lpx)
 
 ## 安装
 

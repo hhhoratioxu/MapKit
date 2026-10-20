@@ -62,7 +62,7 @@ hostname = configuration.ls.apple.com, gspe35-ssl.ls.apple.com, gspe35-ssl.ls.ap
 `;
 const output = "Loon/script";
 await mkdir(output, { recursive: true });
-await writeFile(`${output}/MapKit.plugin`, plugin);
+await writeFile(`${output}/MapKit.lpx`, plugin);
 for (const name of ["request", "response", "defaults"]) {
 	const content = await readFile(`dist/${name}.bundle.js`);
 	if (content.includes(Buffer.from("node:"))) throw new Error("Node code in native bundle");
@@ -83,7 +83,7 @@ const provenance = {
 };
 await mkdir("docs", { recursive: true });
 await writeFile("docs/build-validation.json", `${JSON.stringify(provenance, null, 2)}\n`);
-const files = ["MapKit.plugin", "request.bundle.js", "response.bundle.js", "defaults.bundle.js", "LICENSE.txt"];
+const files = ["MapKit.lpx", "request.bundle.js", "response.bundle.js", "defaults.bundle.js", "LICENSE.txt"];
 const hashes = await Promise.all(files.map(async name => `${digest(await readFile(`${output}/${name}`))}  ${name}`));
 await writeFile(`${output}/SHA256SUMS.txt`, `${hashes.join("\n")}\n`);
 console.log(JSON.stringify(provenance));

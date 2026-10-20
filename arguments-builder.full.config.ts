@@ -8,7 +8,7 @@ export const output = {
 		},
 	},
 	loon: {
-		path: "./dist/iRingo.MapKit.plugin",
+		path: "./dist/iRingo.MapKit.lpx",
 	},
 	customItems: [
 		{

@@ -55,7 +55,7 @@ export async function runBundle(name, { request = { url: manifestURL, method: "G
 }
 
 export default async function verifyLoon() {
-	const plugin = await readFile("Loon/script/MapKit.plugin", "utf8");
+	const plugin = await readFile("Loon/script/MapKit.lpx", "utf8");
 	assert.match(plugin, /#!loon_version = 3\.5\.1\(983\)/);
 	assert.doesNotMatch(plugin, /GeoServices\/releases|mapkit\.pages\.dev|mapkit\.nanocat\.cloud|engine=|max_size=/);
 	const declared = new Set([...plugin.matchAll(/^(\w+) = (?:select|input|switch),/gm)].map(match => match[1]));
