@@ -3,7 +3,7 @@ name: Loon optimization validation
 on:
   workflow_dispatch:
   push:
-    branches: [feature/loon-optimization, perf/loon-memory-v2]
+    branches: [feature/loon-optimization, 'perf/loon-memory-*']
     paths:
       - 'src/**'
       - 'test/**'
@@ -59,5 +59,5 @@ jobs:
             Loon/script/
             docs/build-validation.json
             docs/work-measurements.json
-            docs/memory-measurements.json
+            docs/memory-measurements-v3.json
           if-no-files-found: error
