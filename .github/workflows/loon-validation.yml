@@ -3,7 +3,13 @@ name: Loon optimization validation
 on:
   workflow_dispatch:
   push:
-    branches: [feature/loon-optimization]
+    branches: [feature/loon-optimization, perf/loon-memory-v2]
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'scripts/**'
+      - 'package*.json'
+      - '.github/workflows/loon-validation.yml'
 
 permissions:
   contents: read
@@ -42,6 +48,9 @@ jobs:
       - name: Reproduce synthetic work measurements
         if: hashFiles('scripts/measure-work.mjs') != ''
         run: node scripts/measure-work.mjs
+      - name: Compare compiled bundle memory against previous release
+        if: hashFiles('scripts/measure-memory.mjs') != ''
+        run: npm run measure:memory
       - uses: actions/upload-artifact@v4
         if: hashFiles('Loon/script/MapKit.lpx') != ''
         with:
@@ -50,4 +59,5 @@ jobs:
             Loon/script/
             docs/build-validation.json
             docs/work-measurements.json
+            docs/memory-measurements.json
           if-no-files-found: error
