@@ -1,0 +1,1469 @@
+{
+  "date": "2026-11-01",
+  "baselineCommit": "a0451d9cfc7e289d7040e6076239b9b6c5ba74bd",
+  "version": "4.6.1-optimized.2",
+  "scope": "Synthetic fixtures, actual compiled bundles, 90 independent desktop Node/V8 processes. Not Loon/iPhone or VPN memory acceptance.",
+  "method": "Five fresh processes per version/case; alternated order; fixed clock/random; one invocation per process; GC before measurement. peakRSSKiB is whole-process lifetime high-water RSS, including Node/fixture setup. Heap/ArrayBuffer growth is sampled at store writes and completion, not a continuous peak. Explicit array allocation counts exclude native encoders, internal views and host buffers. All outputs and persisted records are byte-compared by SHA-256.",
+  "environment": {
+    "node": "v22.23.4",
+    "platform": "linux",
+    "arch": "x64",
+    "osRelease": "7.0.0-1017-azure",
+    "cpu": "AMD EPYC 7763 64-Core Processor"
+  },
+  "bundles": {
+    "baseline": {
+      "request": {
+        "sha256": "2f66b660d202fd1e44b4da94dd956e4d615ffcd0f4239f962ace09ccd4fb5527",
+        "bytes": 7970
+      },
+      "response": {
+        "sha256": "a218ada2694434fc68747dcc4c9206ab59428dd4ad066ffd4cf2f945ec121341",
+        "bytes": 151641
+      }
+    },
+    "optimized": {
+      "request": {
+        "sha256": "d8085e206d7f35e7d3ed21e11b490a49f2b56c96e697ab291bfa1c36d02bce83",
+        "bytes": 9372
+      },
+      "response": {
+        "sha256": "da2436fd8f1e12d82c7168d711abe90add02ece86b7cdef24590620678e7b544",
+        "bytes": 153128
+      }
+    }
+  },
+  "results": [
+    {
+      "name": "fresh-cache-1MiB",
+      "fixtureSHA256": "b27f11021ec539280bfe95169b6f3e0402ed8e190fffb269b4e1c10fa09bc598",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 59844,
+          "optimized": 52496
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 1683552,
+          "optimized": 281000
+        },
+        "elapsedMs": {
+          "baseline": 26.625088999999996,
+          "optimized": 4.632074000000003
+        },
+        "explicitArrayBytes": {
+          "baseline": 1048576,
+          "optimized": 0
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 26.330329999999996,
+            "peakRSSKiB": 59744,
+            "beforeRSSBytes": 52477952,
+            "sampledHeapGrowthBytes": 1683552,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 26.625088999999996,
+            "peakRSSKiB": 59768,
+            "beforeRSSBytes": 52371456,
+            "sampledHeapGrowthBytes": 1683552,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 27.785504999999993,
+            "peakRSSKiB": 59860,
+            "beforeRSSBytes": 52465664,
+            "sampledHeapGrowthBytes": 1683552,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 27.828339000000007,
+            "peakRSSKiB": 59844,
+            "beforeRSSBytes": 52449280,
+            "sampledHeapGrowthBytes": 1683552,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 26.354155,
+            "peakRSSKiB": 59860,
+            "beforeRSSBytes": 52465664,
+            "sampledHeapGrowthBytes": 1683552,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 4.669566000000003,
+            "peakRSSKiB": 52496,
+            "beforeRSSBytes": 52449280,
+            "sampledHeapGrowthBytes": 281000,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.632074000000003,
+            "peakRSSKiB": 52460,
+            "beforeRSSBytes": 52355072,
+            "sampledHeapGrowthBytes": 281000,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.481391000000002,
+            "peakRSSKiB": 52460,
+            "beforeRSSBytes": 52408320,
+            "sampledHeapGrowthBytes": 281000,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.541257999999999,
+            "peakRSSKiB": 53224,
+            "beforeRSSBytes": 53211136,
+            "sampledHeapGrowthBytes": 281000,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.645930000000007,
+            "peakRSSKiB": 52500,
+            "beforeRSSBytes": 52461568,
+            "sampledHeapGrowthBytes": 281000,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fresh-cache-2000-tiles",
+      "fixtureSHA256": "980c5ee88ead6a891bc2029eccb5c03fa0466f03445f0054cfb6cbcc8ef68451",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 56404,
+          "optimized": 56084
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 724872,
+          "optimized": 949360
+        },
+        "elapsedMs": {
+          "baseline": 9.045475000000003,
+          "optimized": 5.185320999999995
+        },
+        "explicitArrayBytes": {
+          "baseline": 81092,
+          "optimized": 0
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 8.865921,
+            "peakRSSKiB": 56504,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 724872,
+            "sampledArrayBufferGrowthBytes": 81092,
+            "explicitArrayBytes": 81092,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 10.121296999999998,
+            "peakRSSKiB": 56460,
+            "beforeRSSBytes": 51372032,
+            "sampledHeapGrowthBytes": 723976,
+            "sampledArrayBufferGrowthBytes": 81092,
+            "explicitArrayBytes": 81092,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 9.045475000000003,
+            "peakRSSKiB": 56340,
+            "beforeRSSBytes": 51380224,
+            "sampledHeapGrowthBytes": 724872,
+            "sampledArrayBufferGrowthBytes": 81092,
+            "explicitArrayBytes": 81092,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 8.969123000000003,
+            "peakRSSKiB": 56404,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 723976,
+            "sampledArrayBufferGrowthBytes": 81092,
+            "explicitArrayBytes": 81092,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 9.961449000000002,
+            "peakRSSKiB": 56376,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 724872,
+            "sampledArrayBufferGrowthBytes": 81092,
+            "explicitArrayBytes": 81092,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 5.185320999999995,
+            "peakRSSKiB": 56064,
+            "beforeRSSBytes": 51359744,
+            "sampledHeapGrowthBytes": 949360,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 6.113808999999996,
+            "peakRSSKiB": 56788,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 952144,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 5.6218119999999985,
+            "peakRSSKiB": 56660,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 949360,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 5.157699000000001,
+            "peakRSSKiB": 55992,
+            "beforeRSSBytes": 51417088,
+            "sampledHeapGrowthBytes": 948368,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          },
+          {
+            "elapsedMs": 4.987693,
+            "peakRSSKiB": 56084,
+            "beforeRSSBytes": 51380224,
+            "sampledHeapGrowthBytes": 949360,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "17e585aba02f39728ed83ec977a82749754d9c10e0d4e15849165afff62ee4c5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "revalidate-304-1MiB",
+      "fixtureSHA256": "175d95807b005b994e30a5582796d7576f3047e74132f2bd7854d1e77a8cdcb8",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 59836,
+          "optimized": 52460
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 1698816,
+          "optimized": 297592
+        },
+        "elapsedMs": {
+          "baseline": 27.804979999999993,
+          "optimized": 4.968066999999998
+        },
+        "explicitArrayBytes": {
+          "baseline": 1048576,
+          "optimized": 0
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 28.034107000000006,
+            "peakRSSKiB": 59764,
+            "beforeRSSBytes": 52396032,
+            "sampledHeapGrowthBytes": 1698816,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 27.84782,
+            "peakRSSKiB": 59844,
+            "beforeRSSBytes": 52449280,
+            "sampledHeapGrowthBytes": 1698816,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 26.866102000000005,
+            "peakRSSKiB": 59836,
+            "beforeRSSBytes": 52441088,
+            "sampledHeapGrowthBytes": 1698816,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 27.727936,
+            "peakRSSKiB": 59840,
+            "beforeRSSBytes": 52445184,
+            "sampledHeapGrowthBytes": 1698816,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 27.804979999999993,
+            "peakRSSKiB": 59760,
+            "beforeRSSBytes": 52391936,
+            "sampledHeapGrowthBytes": 1698816,
+            "sampledArrayBufferGrowthBytes": 1048576,
+            "explicitArrayBytes": 1048576,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 5.095724000000004,
+            "peakRSSKiB": 52504,
+            "beforeRSSBytes": 52453376,
+            "sampledHeapGrowthBytes": 297592,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.968066999999998,
+            "peakRSSKiB": 52412,
+            "beforeRSSBytes": 52363264,
+            "sampledHeapGrowthBytes": 297592,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.9401340000000005,
+            "peakRSSKiB": 52500,
+            "beforeRSSBytes": 52547584,
+            "sampledHeapGrowthBytes": 297592,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 4.952647999999996,
+            "peakRSSKiB": 52460,
+            "beforeRSSBytes": 52416512,
+            "sampledHeapGrowthBytes": 297592,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          },
+          {
+            "elapsedMs": 5.0226280000000045,
+            "peakRSSKiB": 52440,
+            "beforeRSSBytes": 52396032,
+            "sampledHeapGrowthBytes": 297592,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "916f0cf3270cd382f62510f862a7baab1e060f29f803dab4ad5254c9277f8a8f"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cache-write-1MiB",
+      "fixtureSHA256": "5fa2e1a5c279375fb4d792b0c66199c6d99658732def9b4ff3e04a707de66f2d",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 93568,
+          "optimized": 64352
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 25553184,
+          "optimized": 4358992
+        },
+        "elapsedMs": {
+          "baseline": 81.84408400000001,
+          "optimized": 28.211046000000003
+        },
+        "explicitArrayBytes": {
+          "baseline": 0,
+          "optimized": 8192
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 81.94027399999999,
+            "peakRSSKiB": 93568,
+            "beforeRSSBytes": 53497856,
+            "sampledHeapGrowthBytes": 25543968,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 77.80885500000001,
+            "peakRSSKiB": 93708,
+            "beforeRSSBytes": 53510144,
+            "sampledHeapGrowthBytes": 25553184,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 78.90608699999999,
+            "peakRSSKiB": 93568,
+            "beforeRSSBytes": 53497856,
+            "sampledHeapGrowthBytes": 25558968,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 81.84408400000001,
+            "peakRSSKiB": 93536,
+            "beforeRSSBytes": 53465088,
+            "sampledHeapGrowthBytes": 25543040,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 83.292149,
+            "peakRSSKiB": 93664,
+            "beforeRSSBytes": 53465088,
+            "sampledHeapGrowthBytes": 25557776,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 28.185057,
+            "peakRSSKiB": 64268,
+            "beforeRSSBytes": 53510144,
+            "sampledHeapGrowthBytes": 4358992,
+            "sampledArrayBufferGrowthBytes": 8192,
+            "explicitArrayBytes": 8192,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 30.394138000000005,
+            "peakRSSKiB": 64500,
+            "beforeRSSBytes": 53514240,
+            "sampledHeapGrowthBytes": 4358992,
+            "sampledArrayBufferGrowthBytes": 8192,
+            "explicitArrayBytes": 8192,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 28.210814999999997,
+            "peakRSSKiB": 64232,
+            "beforeRSSBytes": 53473280,
+            "sampledHeapGrowthBytes": 4358992,
+            "sampledArrayBufferGrowthBytes": 8192,
+            "explicitArrayBytes": 8192,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 30.182775,
+            "peakRSSKiB": 64440,
+            "beforeRSSBytes": 53452800,
+            "sampledHeapGrowthBytes": 4358992,
+            "sampledArrayBufferGrowthBytes": 8192,
+            "explicitArrayBytes": 8192,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          },
+          {
+            "elapsedMs": 28.211046000000003,
+            "peakRSSKiB": 64352,
+            "beforeRSSBytes": 53596160,
+            "sampledHeapGrowthBytes": 4358992,
+            "sampledArrayBufferGrowthBytes": 8192,
+            "explicitArrayBytes": 8192,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "69bcad0ab4ffd4ddb2d7e518c34106b660ca736db6d284220807c65dcca2cc55"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cache-write-80-tiles",
+      "fixtureSHA256": "a067987fff086ee005cb1d310d6695f724af3df05a023b8dee7be46d83bb1758",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 50332,
+          "optimized": 50160
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 436784,
+          "optimized": 363304
+        },
+        "elapsedMs": {
+          "baseline": 3.736885000000001,
+          "optimized": 4.137821000000002
+        },
+        "explicitArrayBytes": {
+          "baseline": 0,
+          "optimized": 4176
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 3.695447999999999,
+            "peakRSSKiB": 50368,
+            "beforeRSSBytes": 50761728,
+            "sampledHeapGrowthBytes": 436784,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 3.715995999999997,
+            "peakRSSKiB": 50368,
+            "beforeRSSBytes": 50761728,
+            "sampledHeapGrowthBytes": 436784,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 3.736885000000001,
+            "peakRSSKiB": 50148,
+            "beforeRSSBytes": 50565120,
+            "sampledHeapGrowthBytes": 436784,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 3.780806999999996,
+            "peakRSSKiB": 50332,
+            "beforeRSSBytes": 50724864,
+            "sampledHeapGrowthBytes": 436784,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 3.8304389999999984,
+            "peakRSSKiB": 50240,
+            "beforeRSSBytes": 50630656,
+            "sampledHeapGrowthBytes": 436784,
+            "sampledArrayBufferGrowthBytes": 0,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 4.025421999999999,
+            "peakRSSKiB": 50100,
+            "beforeRSSBytes": 50589696,
+            "sampledHeapGrowthBytes": 363304,
+            "sampledArrayBufferGrowthBytes": 4176,
+            "explicitArrayBytes": 4176,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 4.112593999999994,
+            "peakRSSKiB": 50240,
+            "beforeRSSBytes": 50761728,
+            "sampledHeapGrowthBytes": 363304,
+            "sampledArrayBufferGrowthBytes": 4176,
+            "explicitArrayBytes": 4176,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 4.1690089999999955,
+            "peakRSSKiB": 50088,
+            "beforeRSSBytes": 50634752,
+            "sampledHeapGrowthBytes": 363304,
+            "sampledArrayBufferGrowthBytes": 4176,
+            "explicitArrayBytes": 4176,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 4.137821000000002,
+            "peakRSSKiB": 50160,
+            "beforeRSSBytes": 50708480,
+            "sampledHeapGrowthBytes": 363304,
+            "sampledArrayBufferGrowthBytes": 4176,
+            "explicitArrayBytes": 4176,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          },
+          {
+            "elapsedMs": 4.186332,
+            "peakRSSKiB": 50368,
+            "beforeRSSBytes": 50761728,
+            "sampledHeapGrowthBytes": 363304,
+            "sampledArrayBufferGrowthBytes": 4176,
+            "explicitArrayBytes": 4176,
+            "explicitArrayAllocations": 1,
+            "completedSynchronously": false,
+            "httpCalls": 1,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "6eeac937383d02ba9fd2691d1639db00dfba9b0c835e0971c49bcadb3ea5c400"
+          }
+        ]
+      }
+    },
+    {
+      "name": "merge-80-tiles-3-groups",
+      "fixtureSHA256": "a7d70965c64dd5748a20efba390cbdfcb2b2d39ffc126e998f51df2b43b8013b",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 58108,
+          "optimized": 58188
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 1846992,
+          "optimized": 1838608
+        },
+        "elapsedMs": {
+          "baseline": 20.957465999999997,
+          "optimized": 22.818399000000007
+        },
+        "explicitArrayBytes": {
+          "baseline": 15556,
+          "optimized": 15556
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 20.918713000000004,
+            "peakRSSKiB": 57956,
+            "beforeRSSBytes": 51097600,
+            "sampledHeapGrowthBytes": 1867720,
+            "sampledArrayBufferGrowthBytes": 11533,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 20.829387000000004,
+            "peakRSSKiB": 58328,
+            "beforeRSSBytes": 51105792,
+            "sampledHeapGrowthBytes": 1844840,
+            "sampledArrayBufferGrowthBytes": 11533,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 20.957465999999997,
+            "peakRSSKiB": 58108,
+            "beforeRSSBytes": 51101696,
+            "sampledHeapGrowthBytes": 1840600,
+            "sampledArrayBufferGrowthBytes": 11533,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 22.639085,
+            "peakRSSKiB": 58408,
+            "beforeRSSBytes": 51093504,
+            "sampledHeapGrowthBytes": 1846992,
+            "sampledArrayBufferGrowthBytes": 11533,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 21.152347,
+            "peakRSSKiB": 57924,
+            "beforeRSSBytes": 50933760,
+            "sampledHeapGrowthBytes": 1869120,
+            "sampledArrayBufferGrowthBytes": 11533,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 22.901602999999994,
+            "peakRSSKiB": 58560,
+            "beforeRSSBytes": 51068928,
+            "sampledHeapGrowthBytes": 1839568,
+            "sampledArrayBufferGrowthBytes": 8402,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 22.818399000000007,
+            "peakRSSKiB": 58188,
+            "beforeRSSBytes": 50872320,
+            "sampledHeapGrowthBytes": 1838608,
+            "sampledArrayBufferGrowthBytes": 8402,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 21.381153999999995,
+            "peakRSSKiB": 58096,
+            "beforeRSSBytes": 51077120,
+            "sampledHeapGrowthBytes": 1838304,
+            "sampledArrayBufferGrowthBytes": 8402,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 21.397274000000003,
+            "peakRSSKiB": 58072,
+            "beforeRSSBytes": 50913280,
+            "sampledHeapGrowthBytes": 1815208,
+            "sampledArrayBufferGrowthBytes": 8402,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          },
+          {
+            "elapsedMs": 23.409529000000006,
+            "peakRSSKiB": 58228,
+            "beforeRSSBytes": 51093504,
+            "sampledHeapGrowthBytes": 1839272,
+            "sampledArrayBufferGrowthBytes": 8402,
+            "explicitArrayBytes": 15556,
+            "explicitArrayAllocations": 1307,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 4576,
+            "outputAndStoreSHA256": "60fe37c05b57458a2c73a62ea8438de160ce0334098ef3c22f428f82f2ffc526"
+          }
+        ]
+      }
+    },
+    {
+      "name": "merge-2000-tiles-60-groups",
+      "fixtureSHA256": "1b60c33e864cc4ddbba4e6afceb1f41b26e0235e5c0d0abd89affd324993eb36",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 100980,
+          "optimized": 97520
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 21177344,
+          "optimized": 13631536
+        },
+        "elapsedMs": {
+          "baseline": 624.894047,
+          "optimized": 609.3645929999999
+        },
+        "explicitArrayBytes": {
+          "baseline": 3806019,
+          "optimized": 3806019
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 619.8824480000001,
+            "peakRSSKiB": 101348,
+            "beforeRSSBytes": 51994624,
+            "sampledHeapGrowthBytes": 21203368,
+            "sampledArrayBufferGrowthBytes": 2110806,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 607.55611,
+            "peakRSSKiB": 100700,
+            "beforeRSSBytes": 51699712,
+            "sampledHeapGrowthBytes": 22126320,
+            "sampledArrayBufferGrowthBytes": 2110806,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 637.0236560000001,
+            "peakRSSKiB": 100980,
+            "beforeRSSBytes": 51965952,
+            "sampledHeapGrowthBytes": 21177344,
+            "sampledArrayBufferGrowthBytes": 2110806,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 624.894047,
+            "peakRSSKiB": 101068,
+            "beforeRSSBytes": 51666944,
+            "sampledHeapGrowthBytes": 12806824,
+            "sampledArrayBufferGrowthBytes": 2071920,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 628.891889,
+            "peakRSSKiB": 100420,
+            "beforeRSSBytes": 52031488,
+            "sampledHeapGrowthBytes": 12706800,
+            "sampledArrayBufferGrowthBytes": 2071473,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 613.289257,
+            "peakRSSKiB": 97520,
+            "beforeRSSBytes": 51838976,
+            "sampledHeapGrowthBytes": 7376136,
+            "sampledArrayBufferGrowthBytes": 2063883,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 609.3645929999999,
+            "peakRSSKiB": 97116,
+            "beforeRSSBytes": 52015104,
+            "sampledHeapGrowthBytes": 18264904,
+            "sampledArrayBufferGrowthBytes": 2110806,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 603.6565,
+            "peakRSSKiB": 95764,
+            "beforeRSSBytes": 51720192,
+            "sampledHeapGrowthBytes": 13631536,
+            "sampledArrayBufferGrowthBytes": 2100610,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 602.687647,
+            "peakRSSKiB": 97688,
+            "beforeRSSBytes": 51740672,
+            "sampledHeapGrowthBytes": 6745856,
+            "sampledArrayBufferGrowthBytes": 2059564,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          },
+          {
+            "elapsedMs": 611.985371,
+            "peakRSSKiB": 97676,
+            "beforeRSSBytes": 52035584,
+            "sampledHeapGrowthBytes": 13677688,
+            "sampledArrayBufferGrowthBytes": 2100862,
+            "explicitArrayBytes": 3806019,
+            "explicitArrayAllocations": 374198,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 1025854,
+            "outputAndStoreSHA256": "5934d064d05ed7af8791228c20363e5b0f69eed2ab7acefbfc245d3505da2d82"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-source",
+      "fixtureSHA256": "cf7dd756f7f9b293d5df06839eab35df4515087e923c52efde1e0a47460272db",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 57820,
+          "optimized": 57976
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 1061672,
+          "optimized": 1084504
+        },
+        "elapsedMs": {
+          "baseline": 13.270976999999995,
+          "optimized": 11.894481999999996
+        },
+        "explicitArrayBytes": {
+          "baseline": 0,
+          "optimized": 0
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 13.809431000000004,
+            "peakRSSKiB": 57512,
+            "beforeRSSBytes": 51855360,
+            "sampledHeapGrowthBytes": 1060744,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 12.193557000000006,
+            "peakRSSKiB": 57820,
+            "beforeRSSBytes": 51818496,
+            "sampledHeapGrowthBytes": 1039624,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 13.270976999999995,
+            "peakRSSKiB": 58084,
+            "beforeRSSBytes": 51843072,
+            "sampledHeapGrowthBytes": 1061672,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 12.619113000000006,
+            "peakRSSKiB": 57952,
+            "beforeRSSBytes": 51826688,
+            "sampledHeapGrowthBytes": 1065080,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 13.538435999999997,
+            "peakRSSKiB": 57644,
+            "beforeRSSBytes": 51814400,
+            "sampledHeapGrowthBytes": 1067192,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 12.042689000000003,
+            "peakRSSKiB": 57980,
+            "beforeRSSBytes": 51826688,
+            "sampledHeapGrowthBytes": 1084504,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 11.894481999999996,
+            "peakRSSKiB": 57660,
+            "beforeRSSBytes": 51789824,
+            "sampledHeapGrowthBytes": 1065240,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 11.882851000000002,
+            "peakRSSKiB": 58108,
+            "beforeRSSBytes": 51826688,
+            "sampledHeapGrowthBytes": 1063656,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 11.702094999999993,
+            "peakRSSKiB": 57912,
+            "beforeRSSBytes": 51781632,
+            "sampledHeapGrowthBytes": 1094072,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 13.315060000000003,
+            "peakRSSKiB": 57976,
+            "beforeRSSBytes": 51818496,
+            "sampledHeapGrowthBytes": 1088296,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "oversized-passthrough",
+      "fixtureSHA256": "d71a994c541c05aee573f25a0eba0941f407833e66b139d379ebf31b00942bbf",
+      "identicalOutputAndStore": true,
+      "summary": {
+        "peakRSSKiB": {
+          "baseline": 61364,
+          "optimized": 60864
+        },
+        "sampledHeapGrowthBytes": {
+          "baseline": 1471904,
+          "optimized": 1471640
+        },
+        "elapsedMs": {
+          "baseline": 10.166953999999997,
+          "optimized": 9.379907000000003
+        },
+        "explicitArrayBytes": {
+          "baseline": 0,
+          "optimized": 0
+        }
+      },
+      "samples": {
+        "baseline": [
+          {
+            "elapsedMs": 9.276104000000004,
+            "peakRSSKiB": 60612,
+            "beforeRSSBytes": 56471552,
+            "sampledHeapGrowthBytes": 1471904,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 10.296526,
+            "peakRSSKiB": 61520,
+            "beforeRSSBytes": 56668160,
+            "sampledHeapGrowthBytes": 1471904,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 10.206316999999999,
+            "peakRSSKiB": 61480,
+            "beforeRSSBytes": 56627200,
+            "sampledHeapGrowthBytes": 1472016,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 10.166953999999997,
+            "peakRSSKiB": 61364,
+            "beforeRSSBytes": 56668160,
+            "sampledHeapGrowthBytes": 1471904,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 9.168013000000002,
+            "peakRSSKiB": 60760,
+            "beforeRSSBytes": 56651776,
+            "sampledHeapGrowthBytes": 1471904,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": false,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          }
+        ],
+        "optimized": [
+          {
+            "elapsedMs": 10.481380000000001,
+            "peakRSSKiB": 61636,
+            "beforeRSSBytes": 56545280,
+            "sampledHeapGrowthBytes": 1471752,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 9.356825,
+            "peakRSSKiB": 60864,
+            "beforeRSSBytes": 56557568,
+            "sampledHeapGrowthBytes": 1471640,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 9.320687,
+            "peakRSSKiB": 60820,
+            "beforeRSSBytes": 56512512,
+            "sampledHeapGrowthBytes": 1471752,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 10.318276000000004,
+            "peakRSSKiB": 61804,
+            "beforeRSSBytes": 56557568,
+            "sampledHeapGrowthBytes": 1471640,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          {
+            "elapsedMs": 9.379907000000003,
+            "peakRSSKiB": 60768,
+            "beforeRSSBytes": 56672256,
+            "sampledHeapGrowthBytes": 1471640,
+            "sampledArrayBufferGrowthBytes": 8,
+            "explicitArrayBytes": 0,
+            "explicitArrayAllocations": 0,
+            "completedSynchronously": true,
+            "httpCalls": 0,
+            "outputBytes": 0,
+            "outputAndStoreSHA256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          }
+        ]
+      }
+    }
+  ]
+}

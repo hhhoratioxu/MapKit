@@ -1,0 +1,44 @@
+{
+  "inspectedDate": "2026-11-01",
+  "version": "4.6.1-optimized.2",
+  "sourceCommit": "189fbdc5b48be6faf4b9873f5544285516927de0",
+  "workflowRun": "https://github.com/hhhoratioxu/MapKit/actions/runs/41318678974",
+  "jobId": 124884071047,
+  "artifactId": 13088417189,
+  "artifactZipSHA256": "21651e7ffbea8030f0dad9da87b1860c01ab67c2472ef88497448d4cdf6f2d07",
+  "status": "completed",
+  "conclusion": "success",
+  "regressionTests": {
+    "passed": 117,
+    "failed": 0
+  },
+  "compiledBundleScenarios": 14,
+  "localMemorySamples": 90,
+  "ciMemorySamples": 90,
+  "memoryScenarios": 9,
+  "outputAndStoreEqualInEverySample": true,
+  "runtimeFilesByteMatched": 6,
+  "localNode": "v24.22.1",
+  "ciBuild": {
+    "version": "4.6.1-optimized.2",
+    "resourceRef": "optimized-v2",
+    "sourceCommit": "189fbdc5b48be6faf4b9873f5544285516927de0",
+    "upstreamCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
+    "node": "v22.23.4",
+    "schemaPackage": "1.1.3",
+    "lockfileSHA256": "55020b9f87f04ee11d2ff7d8212a44bfdc0d4cffd3dfc441cd297fb61dd249ce",
+    "checks": {
+      "compiledBundleScenarios": 14,
+      "configurationChecks": "native expressions, URL guards, typed parameters, pinned imports; real Loon parser unavailable",
+      "sizes": {
+        "request": 9372,
+        "response": 153128,
+        "defaults": 7257
+      },
+      "nativeDeviceAcceptance": "not performed"
+    }
+  },
+  "nativeLoonParser": "not available",
+  "iPhoneAcceptance": "not performed",
+  "nativeMemoryPowerAndVPNStability": "not measured"
+}

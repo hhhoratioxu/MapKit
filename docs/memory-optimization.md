@@ -39,5 +39,5 @@
 
 - 117 项回归通过，包括原有测试、2000 组随机 Base64/线格式差分、合法多线型与字段数上限、400 组瓦片布局比较、损坏/并发替换/过期缓存、旧 JSON 兼容、存储异常、ETag/304、回调和失败放行。
 - 14 个实际编译 bundle 场景通过，检查原生参数、URL Guard、`.lpx` 固定版本引用、同步本地完成、真实异步等待和一次 `$done`。
-- 90 个桌面独立进程的输出与持久缓存摘要一致；代码与源协议包保持可重建。CI 和远端发布证据另行记录，旧版 [ci-validation.json](ci-validation.json) 仅属于 optimized.1。
+- 90 个桌面独立进程的输出与持久缓存摘要一致；代码与源协议包保持可重建。[本版 CI](https://github.com/hhhoratioxu/MapKit/actions/runs/41318678974) 在 Linux/Node v22.23.4 上再次通过 117 项测试、14 个编译场景与 90 个独立进程对比。下载并校验 CI ZIP，六个运行资源与本地完全相同；见 [CI 证据](ci-validation-v2.json) 和 [完整云端样本](memory-measurements-ci.json)。旧版 [ci-validation.json](ci-validation.json) 仅属于 optimized.1。
 - 未运行真实 Loon 配置解析器，未验证用户 iPhone 地图效果、耗电、原生内存或长时间 VPN 稳定性。JS 边界检查发生在宿主已经取得正文之后，无法给出宿主内存配额或不掉 VPN 的保证。

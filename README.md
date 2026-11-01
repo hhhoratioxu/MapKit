@@ -35,7 +35,7 @@
 
 用上一版与新版实际 bundle 做 **9 个场景、90 个独立 Node/V8 进程**对比，所有场景的输出与持久缓存字节一致。1 MiB 缓存写入场景的进程峰值 RSS 中位数从 **103.0 MiB 降至 69.0 MiB**；2000 瓦片/60 分组合成从 **106.7 MiB 降至 100.9 MiB**。小清单写入存在轻微耗时和 RSS 增加，完整数据与方法见 [内存优化记录](docs/memory-optimization.md) 和 [原始样本](docs/memory-measurements.json)。这些数值包含桌面 Node 进程本身，不是 Loon 内存。
 
-当前构建见 [构建记录](docs/build-validation.json)。第一版的 89 项测试和旧 CI 状态页差异保留在 [历史 CI 验证记录](docs/ci-validation.json)；不会把旧 CI 结果当作新版 CI。原有容量和运行边界见 [优化说明](docs/optimization.md)。
+当前 [GitHub Actions](https://github.com/hhhoratioxu/MapKit/actions/runs/41318678974) 状态为 **success**：117 项回归、14 个编译后场景和另外 90 次云端内存对比通过，下载的六个运行资源与本地产物逐字节相同。见 [新版 CI 证据](docs/ci-validation-v2.json)、[云端内存样本](docs/memory-measurements-ci.json) 和 [本地构建记录](docs/build-validation.json)。第一版的 89 项测试和旧 CI 状态页差异保留在 [历史 CI 验证记录](docs/ci-validation.json)；原有容量和运行边界见 [优化说明](docs/optimization.md)。
 
 脚本大小检查、Node/V8 测量与模拟接口测试不能代替真实 Loon 解析、iPhone 地图显示、耗电或 VPN 连续运行验收。真实设备验收尚未完成。
 
