@@ -34,4 +34,5 @@ Request bundle 没有变化，其缓存读写/304 场景仅作为对照，不把
 - 149 项回归通过；新增全部 protobuf 标量、64 位边界、NaN/Infinity、UTF-8 孤立代理项、嵌套长度前缀、写入上限、返回视图复用隔离及 300 组原 schema/未知字段差分。
 - 16 个实际 bundle 场景通过，新增多分组/未知字段编码与输出超限放行，并验证单次同步完成、原缓存不被修改。
 - 110 个性能进程与 22 个分配诊断进程均核对新旧输出与持久记录一致；具体资源摘要随测量数据发布。
+- [GitHub Actions](https://github.com/hhhoratioxu/MapKit/actions/runs/41320436185) 在 Linux/Node v22.23.4 上通过同样的 149 项回归、16 个编译场景、110 次测量与 22 次分配诊断；CI ZIP 完整性与六个运行资源字节核验通过。详见 [CI 验证记录](ci-validation-v3.json) 与 [云端原始样本](memory-measurements-v3-ci.json)。
 - 尚未运行真实 Loon 配置解析器或用户 iPhone 验收，没有测量原生 Loon/Network Extension 峰值、耗电和长期 VPN 稳定性。桌面测量不能保证手机不掉 VPN。

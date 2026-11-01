@@ -38,6 +38,8 @@
 
 完整改动、测量方法及代价见 [本版内存优化记录](docs/memory-optimization-v3.md)、[原始样本](docs/memory-measurements-v3.json) 和 [构建记录](docs/build-validation.json)。上一版的缓存优化与 CI 证据保留在 [optimized-v2 记录](docs/memory-optimization.md) 和 [CI 验证](docs/ci-validation-v2.json)；原有容量和运行边界见 [优化说明](docs/optimization.md)。
 
+本版 [GitHub Actions](https://github.com/hhhoratioxu/MapKit/actions/runs/41320436185) 状态为 **success**：149 项测试、16 个编译场景和云端另外 110 次测量/22 次分配诊断通过。下载的六个运行资源与本地产物逐字节一致，见 [CI 验证记录](docs/ci-validation-v3.json) 与 [云端完整样本](docs/memory-measurements-v3-ci.json)。
+
 脚本大小检查、Node/V8 测量与模拟接口测试不能代替真实 Loon 解析、iPhone 地图显示、耗电或 VPN 连续运行验收。真实设备验收尚未完成。
 
 ## 构建
