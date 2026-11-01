@@ -5,6 +5,7 @@ import GEOResourceManifestDownload from "../class/GEOResourceManifestDownload.mj
 import database from "../function/database.mjs";
 import { bytes, header, MAX_MANIFEST_BYTES, MAX_OUTPUT_BYTES, manifestURL, replaceHeaders, validWire } from "./common.mjs";
 import ManifestCache from "./ManifestCache.mjs";
+import ManifestWriter from "./ManifestWriter.mjs";
 import settings from "./settings.mjs";
 
 export function validManifest(body) {
@@ -79,7 +80,7 @@ export function processResponse(request, response, argument, store, now) {
 		// These tables are only read by the encoder; sharing is local to this one
 		// response and never exposes a mutable decoded cache across executions.
 		target.tileGroup = GEOResourceManifest.tileGroups(target.tileGroup, target.tileSet, target.attribution, target.resource, true);
-		const body = GEOResourceManifestDownload.encode(target);
+		const body = GEOResourceManifestDownload.encode(target, { writerFactory: () => new ManifestWriter() });
 		if (body.length > MAX_OUTPUT_BYTES) return {};
 		if (config.Diagnostics) console.log("MapKit response: merged");
 		return { body, headers: replaceHeaders(response.headers) };

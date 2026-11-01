@@ -8,9 +8,9 @@ import path from "node:path";
 import { Resources } from "@nsringo/mapkit";
 import { manifestURL } from "../test/helpers.mjs";
 
-const baselineCommit = "a0451d9cfc7e289d7040e6076239b9b6c5ba74bd";
+const baselineCommit = "ed182e205d764ab36eb7b50c946f34a8b28da01b";
 const now = 1793462400000;
-const directory = path.resolve(".cache/memory-measurement");
+const directory = path.resolve(".cache/memory-measurement-v3");
 await mkdir(directory, { recursive: true });
 const digest = value => createHash("sha256").update(value).digest("hex");
 const baselines = {};
@@ -52,6 +52,10 @@ const large = new Uint8Array(1024 * 1024);
 large.set([0x0a, 0xfc, 0xff, 0x3f]); // payload length 1,048,572
 const smallSource = manifest("cn", 80, 3),
 	denseSource = manifest("cn", 2000, 60);
+const expandedSource = Resources.fromBinary(manifest("cn", 80, 3));
+expandedSource.urlInfoSet[0].dispatcherURL.url = "https://cn.example/" + "x".repeat(100000);
+const expandedTarget = Resources.fromBinary(manifest("us", 80, 3));
+expandedTarget.urlInfoSet = Array.from({ length: 60 }, () => expandedTarget.urlInfoSet[0]);
 const fixtures = [
 	{ name: "fresh-cache-1MiB", kind: "request", store: stored(large) },
 	{ name: "fresh-cache-2000-tiles", kind: "request", store: stored(denseSource) },
@@ -60,6 +64,8 @@ const fixtures = [
 	{ name: "cache-write-80-tiles", kind: "request", store: [], http: { response: { status: 200, headers }, bodyBase64: Buffer.from(smallSource).toString("base64") }, httpCalls: 1 },
 	{ name: "merge-80-tiles-3-groups", kind: "response", store: stored(smallSource), response: encodedResponse(manifest("us", 80, 3)) },
 	{ name: "merge-2000-tiles-60-groups", kind: "response", store: stored(denseSource), response: encodedResponse(manifest("us", 2000, 60)) },
+	{ name: "merge-15000-tiles-4-groups", kind: "response", store: stored(manifest("cn", 15000, 4)), response: encodedResponse(manifest("us", 15000, 4)) },
+	{ name: "output-limit-passthrough", kind: "response", store: stored(Resources.toBinary(expandedSource)), response: encodedResponse(Resources.toBinary(expandedTarget)) },
 	{ name: "missing-source", kind: "response", store: [], response: encodedResponse(manifest("us", 2000, 60)) },
 	{ name: "oversized-passthrough", kind: "response", store: [], response: encodedResponse(new Uint8Array(2 * 1024 * 1024 + 1)) },
 ].map(fixture => ({ ...fixture, now, request: { url: manifestURL, method: "GET", headers: {} } }));
@@ -78,20 +84,28 @@ for (const fixture of fixtures) {
 			samples[variant].push(JSON.parse(output));
 		}
 	}
-	const hashes = new Set([...samples.baseline, ...samples.optimized].map(sample => sample.outputAndStoreSHA256));
+	const allocationProbes = {};
+	for (const variant of ["baseline", "optimized"]) {
+		const bundle = (variant === "baseline" ? baselines : optimized)[fixture.kind];
+		const output = execFileSync(process.execPath, ["--expose-gc", "scripts/memory-worker.mjs", bundle.path, file, "--count-arrays"], { encoding: "utf8", timeout: 20000 });
+		const { explicitArrayBytes, explicitArrayAllocations, outputAndStoreSHA256 } = JSON.parse(output);
+		allocationProbes[variant] = { explicitArrayBytes, explicitArrayAllocations, outputAndStoreSHA256 };
+	}
+	const hashes = new Set([...samples.baseline, ...samples.optimized, ...Object.values(allocationProbes)].map(sample => sample.outputAndStoreSHA256));
 	assert.equal(hashes.size, 1, `Output/store changed for ${fixture.name}`);
+	for (const sample of [...samples.baseline, ...samples.optimized]) assert.equal(sample.outputBytes > 0, fixture.name.startsWith("merge-"), `Unexpected rewrite/passthrough for ${fixture.name}`);
 	const summary = {};
-	for (const metric of ["peakRSSKiB", "sampledHeapGrowthBytes", "elapsedMs", "explicitArrayBytes"]) summary[metric] = Object.fromEntries(Object.entries(samples).map(([variant, values]) => [variant, median(values.map(value => value[metric]))]));
-	results.push({ name: fixture.name, fixtureSHA256: digest(content), identicalOutputAndStore: true, summary, samples });
+	for (const metric of ["peakRSSKiB", "sampledHeapGrowthBytes", "elapsedMs"]) summary[metric] = Object.fromEntries(Object.entries(samples).map(([variant, values]) => [variant, median(values.map(value => value[metric]))]));
+	results.push({ name: fixture.name, fixtureSHA256: digest(content), identicalBundle: baselines[fixture.kind].sha256 === optimized[fixture.kind].sha256, identicalOutputAndStore: true, summary, samples, allocationProbes });
 	console.log(JSON.stringify({ name: fixture.name, ...summary }));
 }
 const report = {
 	date: "2026-11-01",
 	baselineCommit,
 	version: JSON.parse(await readFile("package.json", "utf8")).version,
-	scope: `Synthetic fixtures, actual compiled bundles, ${fixtures.length * 10} independent desktop Node/V8 processes. Not Loon/iPhone or VPN memory acceptance.`,
+	scope: `Synthetic fixtures, actual compiled bundles, ${fixtures.length * 10} independent desktop Node/V8 measurement processes plus ${fixtures.length * 2} separate allocation probes. Not Loon/iPhone or VPN memory acceptance.`,
 	method:
-		"Five fresh processes per version/case; alternated order; fixed clock/random; one invocation per process; GC before measurement. peakRSSKiB is whole-process lifetime high-water RSS, including Node/fixture setup. Heap/ArrayBuffer growth is sampled at store writes and completion, not a continuous peak. Explicit array allocation counts exclude native encoders, internal views and host buffers. All outputs and persisted records are byte-compared by SHA-256.",
+		"Five fresh uninstrumented processes per version/case; alternated order; fixed clock/random; one invocation per process; GC before measurement. peakRSSKiB is whole-process lifetime high-water RSS, including Node/fixture setup. Heap/ArrayBuffer growth is sampled at store writes and completion, not a continuous peak. Array constructors are instrumented ONLY in separate diagnostic processes; those timings/RSS are excluded. Allocation counts exclude native encoders, internal views and host buffers. All outputs and persisted records are byte-compared by SHA-256. Cases with identicalBundle are controls, not optimization gains.",
 	environment: { node: process.version, platform: process.platform, arch: process.arch, osRelease: os.release(), cpu: os.cpus()[0]?.model },
 	bundles: Object.fromEntries(
 		[
@@ -101,4 +115,4 @@ const report = {
 	),
 	results,
 };
-await writeFile("docs/memory-measurements.json", `${JSON.stringify(report, null, 2)}\n`);
+await writeFile("docs/memory-measurements-v3.json", `${JSON.stringify(report, null, 2)}\n`);

@@ -1,10 +1,10 @@
 #  MapKit · Loon 缓存与性能优化
 
-基于 [NSRingo/MapKit](https://github.com/NSRingo/MapKit) 的原生 Fork，保留 VirgilClyne 与上游贡献者版权、Apache-2.0 许可证和完整 Git 历史。当前优化版本为 **4.6.1-optimized.2**，运行脚本固定在 `optimized-v2`。
+基于 [NSRingo/MapKit](https://github.com/NSRingo/MapKit) 的原生 Fork，保留 VirgilClyne 与上游贡献者版权、Apache-2.0 许可证和完整 Git 历史。当前优化版本为 **4.6.1-optimized.3**，运行脚本固定在 `optimized-v3`。
 
 与本账号 WeatherKit 的发布方式一致，提供独立仓库和一个 Loon 安装入口。
 
-[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.lpx) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.lpx) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v2/Loon/script/MapKit.lpx) · [Release](https://github.com/hhhoratioxu/MapKit/releases/tag/optimized-v2)
+[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.lpx) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.lpx) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v3/Loon/script/MapKit.lpx) · [Release](https://github.com/hhhoratioxu/MapKit/releases/tag/optimized-v3)
 
 ## 安装
 
@@ -18,6 +18,7 @@
 
 ## 优化与修复
 
+- 清单编码改为有上限的连续缓冲区，避免为每个嵌套字段保留小字节数组后再拼接。编码期间就检查 4 MiB 输出边界；异常或超限仍保留 Apple 原响应。原 schema、未知字段和数值转换继续兼容。
 - 请求阶段直接在缓存字符串上核对 Base64 和 protobuf 边界，不再为命中/304 检查分配整份二进制清单；响应阶段真正需要合成时才解码。完整键、generation、有效期和损坏检查仍保留。
 - Base64 写入复用最多 **8 KiB** 暂存区，避免每三个字节拼接一次字符串；缓存仍采用兼容的 JSON 格式。地图分组在单次编码期间共享只读引用表，减少重复对象；纯本地路径同步完成。
 - 补充地区清单默认缓存 **1 小时**，新鲜缓存期间不发附加请求；过期优先使用 ETag 和 304。目标清单仍由 Apple 正常提供。
@@ -31,11 +32,11 @@
 
 ## 验证
 
-内存优化版本地通过 **117 项回归测试、14 个编译后脚本场景**，包括旧缓存兼容、2000 组 Base64/线格式差分、400 组瓦片布局对比，以及正常/异常/同步/异步完成路径。
+本版本地通过 **149 项回归测试、16 个编译后脚本场景**，新增全部标量编码、长度前缀边界、未知字段、300 组清单编码差分和输出超限放行；保留旧缓存、Base64、瓦片布局和同步/异步路径检查。
 
-用上一版与新版实际 bundle 做 **9 个场景、90 个独立 Node/V8 进程**对比，所有场景的输出与持久缓存字节一致。1 MiB 缓存写入场景的进程峰值 RSS 中位数从 **103.0 MiB 降至 69.0 MiB**；2000 瓦片/60 分组合成从 **106.7 MiB 降至 100.9 MiB**。小清单写入存在轻微耗时和 RSS 增加，完整数据与方法见 [内存优化记录](docs/memory-optimization.md) 和 [原始样本](docs/memory-measurements.json)。这些数值包含桌面 Node 进程本身，不是 Loon 内存。
+以刚发布的 `optimized-v2` 为基线，运行 **11 个场景、110 个未拦截数组构造器的独立 Node/V8 测量进程**，另用 22 个进程统计分配。所有输出与持久缓存摘要一致。2000 瓦片/60 分组合成的峰值 RSS 从 **100.8 MiB 降至 75.0 MiB（约 25.5%）**；15000 瓦片/4 分组从 **173.2 MiB 降至 115.8 MiB（约 33.1%）**。这是整个桌面进程数据，不是 Loon 内存。
 
-当前 [GitHub Actions](https://github.com/hhhoratioxu/MapKit/actions/runs/41318678974) 状态为 **success**：117 项回归、14 个编译后场景和另外 90 次云端内存对比通过，下载的六个运行资源与本地产物逐字节相同。见 [新版 CI 证据](docs/ci-validation-v2.json)、[云端内存样本](docs/memory-measurements-ci.json) 和 [本地构建记录](docs/build-validation.json)。第一版的 89 项测试和旧 CI 状态页差异保留在 [历史 CI 验证记录](docs/ci-validation.json)；原有容量和运行边界见 [优化说明](docs/optimization.md)。
+完整改动、测量方法及代价见 [本版内存优化记录](docs/memory-optimization-v3.md)、[原始样本](docs/memory-measurements-v3.json) 和 [构建记录](docs/build-validation.json)。上一版的缓存优化与 CI 证据保留在 [optimized-v2 记录](docs/memory-optimization.md) 和 [CI 验证](docs/ci-validation-v2.json)；原有容量和运行边界见 [优化说明](docs/optimization.md)。
 
 脚本大小检查、Node/V8 测量与模拟接口测试不能代替真实 Loon 解析、iPhone 地图显示、耗电或 VPN 连续运行验收。真实设备验收尚未完成。
 

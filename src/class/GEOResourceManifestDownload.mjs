@@ -48,7 +48,7 @@ export default class GEOResourceManifestDownload {
 	static decode(rawBody = new Uint8Array()) {
 		return convertEnums(Resources.fromBinary(rawBody));
 	}
-	static encode(body = {}) {
-		return Resources.toBinary(convertEnums(body));
+	static encode(body = {}, options) {
+		return Resources.toBinary(convertEnums(body), options);
 	}
 }

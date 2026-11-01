@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { performance } from "node:perf_hooks";
 import vm from "node:vm";
 
-const [bundlePath, fixturePath] = process.argv.slice(2);
+const [bundlePath, fixturePath, countArrays] = process.argv.slice(2);
 const fixture = JSON.parse(readFileSync(fixturePath, "utf8"));
 const code = readFileSync(bundlePath, "utf8");
 const store = new Map(fixture.store);
@@ -63,7 +63,7 @@ const started = performance.now();
 const context = vm.createContext({
 	URL,
 	URLSearchParams,
-	Uint8Array: TrackedBytes,
+	Uint8Array: countArrays ? TrackedBytes : Uint8Array,
 	ArrayBuffer,
 	DataView,
 	TextEncoder,
@@ -118,8 +118,8 @@ console.log(
 		beforeRSSBytes: before.rss,
 		sampledHeapGrowthBytes: sampledHeapUsed - before.heapUsed,
 		sampledArrayBufferGrowthBytes: sampledArrayBuffers - before.arrayBuffers,
-		explicitArrayBytes,
-		explicitArrayAllocations,
+		explicitArrayBytes: countArrays ? explicitArrayBytes : null,
+		explicitArrayAllocations: countArrays ? explicitArrayAllocations : null,
 		completedSynchronously,
 		httpCalls,
 		outputBytes: result.body?.byteLength ?? 0,

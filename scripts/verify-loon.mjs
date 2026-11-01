@@ -67,7 +67,7 @@ export default async function verifyLoon() {
 	for (const line of scripts) {
 		assert.match(line, /\$\{url\} ~= /);
 		assert.doesNotMatch(line, /\|\|/);
-		const ref = process.env.MAPKIT_RESOURCE_REF || "optimized-v2";
+		const ref = process.env.MAPKIT_RESOURCE_REF || "optimized-v3";
 		assert.ok(line.includes(`https://raw.githubusercontent.com/hhhoratioxu/MapKit/${ref}/Loon/script/`));
 	}
 	const patterns = [...plugin.matchAll(/\$\{url\} ~= (\/.*?\/) then|\$\{url\} ~= (\/.*?\/) &&/g)].map(match => new Function(`return ${match[1] ?? match[2]}`)());
@@ -130,6 +130,31 @@ export default async function verifyLoon() {
 	scenarios++;
 	const unchanged = await runBundle("defaults", { request: { url: "https://configuration.ls.apple.com/config/defaults" }, response: { status: 200, headers: { "Content-Type": "application/xml" }, body: "not a plist" } });
 	assert.equal(Object.keys(unchanged).length, 0);
+	scenarios++;
+	const dense = Resources.fromBinary(
+		manifest(
+			"us",
+			Array.from({ length: 256 }, (_, i) => i + 1),
+		),
+	);
+	dense.tileGroup = Resources.create({ tileGroup: Array.from({ length: 30 }, (_, identifier) => ({ identifier })) }).tileGroup;
+	const wire = Resources.toBinary(dense);
+	const withUnknown = new Uint8Array(wire.length + 3);
+	withUnknown.set(wire);
+	withUnknown.set([0xc0, 0x0c, 123], wire.length);
+	const denseResult = await runBundle("response", { store, synchronous: true, response: { status: 200, headers: { "Content-Type": "application/x-protobuf" }, body: withUnknown } });
+	assert.equal(Resources.fromBinary(denseResult.body).tileGroup.length, 30);
+	assert.deepEqual(denseResult.body.slice(-3), new Uint8Array([0xc0, 0x0c, 123]));
+	scenarios++;
+	const expandedSource = Resources.fromBinary(manifest("cn"));
+	expandedSource.urlInfoSet[0].dispatcherURL.url = `https://cn.example/${"x".repeat(100000)}`;
+	const expandedTarget = Resources.fromBinary(manifest("us"));
+	expandedTarget.urlInfoSet = Array.from({ length: 60 }, () => expandedTarget.urlInfoSet[0]);
+	new ManifestCache(store).put(manifestURL.replace("US", "CN"), Resources.toBinary(expandedSource));
+	const saved = [...store.data];
+	const limited = await runBundle("response", { store, synchronous: true, response: { status: 200, headers: { "Content-Type": "application/x-protobuf" }, body: Resources.toBinary(expandedTarget) } });
+	assert.equal(Object.keys(limited).length, 0);
+	assert.deepEqual([...store.data], saved);
 	scenarios++;
 	const sizes = Object.fromEntries(await Promise.all(["request", "response", "defaults"].map(async name => [name, (await stat(`Loon/script/${name}.bundle.js`)).size])));
 	assert.ok(sizes.request < 20000, "Request must not load the protobuf schema");
