@@ -1,5 +1,5 @@
 // Copyright 2026 hhhoratioxu. SPDX-License-Identifier: Apache-2.0
-import { cacheKey, decodeBase64, encodeBase64, MAX_CACHE_BYTES, validWire } from "./common.mjs";
+import { cacheKey, decodeBase64, encodeBase64, MAX_CACHE_BYTES, validBase64Wire, validWire } from "./common.mjs";
 export const CACHE_PREFIX = "Horatio.MapKit.v1.";
 export const CACHE_SLOTS = 4;
 const maxEncoded = Math.ceil(MAX_CACHE_BYTES / 3) * 4 + 4096;
@@ -53,18 +53,43 @@ export default class ManifestCache {
 			.slice(0, CACHE_SLOTS);
 		return this.index;
 	}
-	get(url, maxAgeSeconds = 86400) {
+	// Existing records are JSON with a large, unescaped Base64 value at the end.
+	// Parse only their bounded metadata and read the Base64 by offsets. Preserve
+	// the old JSON format and accept reordered/escaped legacy records via fallback.
+	record(slot) {
+		try {
+			const text = this.store?.read(`${CACHE_PREFIX}slot${slot}`);
+			if (typeof text !== "string" || text.length > maxEncoded) return null;
+			const marker = ',"base64":"';
+			const offset = text.indexOf(marker);
+			if (offset >= 0 && offset <= 4096 && text.endsWith('"}') && text.indexOf("\\", offset + marker.length) < 0 && text.indexOf('"', offset + marker.length) === text.length - 2) {
+				const metadata = JSON.parse(`${text.slice(0, offset)}}`);
+				if (Object.keys(metadata).length === 2 && typeof metadata.key === "string" && typeof metadata.generation === "string") return { key: metadata.key, generation: metadata.generation, text, start: offset + marker.length, end: text.length - 2 };
+			}
+			const record = JSON.parse(text);
+			return record && { key: record.key, generation: record.generation, text: record.base64, start: 0, end: record.base64?.length };
+		} catch {
+			return null;
+		}
+	}
+	get(url, maxAgeSeconds = 86400, includeBody = true) {
 		const key = cacheKey(url);
 		if (!key) return null;
 		const entry = this.entries().find(entry => entry.key === key);
 		if (!entry) return null;
 		const now = this.now();
-		const result = { ...entry, body: null };
+		const result = { ...entry, body: null, hasBody: false };
 		if (now < entry.bodyAt || now - entry.bodyAt > maxAgeSeconds * 1000 || !entry.generation) return result;
-		const record = this.read(`${CACHE_PREFIX}slot${entry.slot}`, maxEncoded);
+		const record = this.record(entry.slot);
 		if (record?.key !== key || record?.generation !== entry.generation) return result;
-		const body = decodeBase64(record.base64);
-		if (body?.length && validWire(body)) result.body = body;
+		if (!includeBody) result.hasBody = validBase64Wire(record.text, record.start, record.end);
+		else {
+			const body = decodeBase64(record.text, record.start, record.end);
+			if (body?.length && validWire(body)) {
+				result.body = body;
+				result.hasBody = true;
+			}
+		}
 		return result;
 	}
 	put(url, body, etag = "") {
@@ -76,7 +101,13 @@ export default class ManifestCache {
 		const slot = old?.slot ?? free ?? entries.reduce((a, b) => (a.checkedAt <= b.checkedAt ? a : b)).slot;
 		const now = this.now();
 		const generation = `${now.toString(36)}-${Math.random().toString(36).slice(2)}`;
-		if (!this.write(`${CACHE_PREFIX}slot${slot}`, { key, generation, base64: encodeBase64(body) })) return false;
+		try {
+			const metadata = JSON.stringify({ key, generation });
+			const record = `${metadata.slice(0, -1)},"base64":"${encodeBase64(body)}"}`;
+			if (this.store?.write(record, `${CACHE_PREFIX}slot${slot}`) !== true) return false;
+		} catch {
+			return false;
+		}
 		const entry = { slot, key, generation, etag: typeof etag === "string" && etag.length <= 512 ? etag : "", checkedAt: now, bodyAt: now, retryAt: 0 };
 		this.index = [...entries.filter(item => item.slot !== slot && item.key !== key), entry];
 		return this.write(`${CACHE_PREFIX}index`, this.index);

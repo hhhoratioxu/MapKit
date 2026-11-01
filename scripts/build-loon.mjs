@@ -9,7 +9,7 @@ import verifyLoon from "./verify-loon.mjs";
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
 const schema = JSON.parse(await readFile("node_modules/@nsringo/mapkit/package.json", "utf8"));
 if (schema.version !== "1.1.3") throw new Error("Expected the original locked MapKit 1.1.3 schema");
-const ref = process.env.MAPKIT_RESOURCE_REF || "optimized-v1";
+const ref = process.env.MAPKIT_RESOURCE_REF || "optimized-v2";
 if (!/^[A-Za-z0-9._-]+$/.test(ref)) throw new Error("Invalid resource ref");
 const base = `https://raw.githubusercontent.com/hhhoratioxu/MapKit/${ref}/Loon/script`;
 const parameters = [
@@ -33,7 +33,7 @@ const manifestPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)
 const announcementPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/`;
 const defaultsPattern = String.raw`/^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/`;
 const plugin = `#!name =  MapKit · 缓存与性能优化
-#!desc = 基于 NSRingo/MapKit；补充清单短时缓存、失败回退与受限处理。Loon 原生接口。
+#!desc = 基于 NSRingo/MapKit；缓存按需解码、分组引用复用、失败回退与受限处理。Loon 原生接口。
 #!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
 #!homepage = https://github.com/hhhoratioxu/MapKit
 #!icon = https://developer.apple.com/assets/elements/icons/maps/maps-128x128.png
@@ -41,7 +41,7 @@ const plugin = `#!name =  MapKit · 缓存与性能优化
 #!system = iOS,iPadOS,macOS
 #!system_version = 15
 #!loon_version = 3.5.1(983)
-#!date = 2026-10-20
+#!date = 2026-11-01
 #!version = ${pkg.version}
 
 [Argument]

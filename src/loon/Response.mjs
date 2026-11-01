@@ -22,7 +22,7 @@ export function validManifest(body) {
 	);
 }
 
-export async function processResponse(request, response, argument, store, now) {
+export function processResponse(request, response, argument, store, now) {
 	const url = manifestURL(request.url);
 	const type = header(response.headers, "content-type").split(";")[0].trim().toLowerCase();
 	const input = bytes(response.body ?? response.bodyBytes);
@@ -52,6 +52,7 @@ export async function processResponse(request, response, argument, store, now) {
 	try {
 		source = GEOResourceManifestDownload.decode(cached.body);
 		if (!validManifest(source)) throw new Error("Unsupported source");
+		cached.body = null;
 	} catch {
 		cache.invalidate(sourceURL.href);
 		cache.fail(sourceURL.href);
@@ -70,9 +71,14 @@ export async function processResponse(request, response, argument, store, now) {
 		target.urlInfoSet = GEOResourceManifest.urlInfoSets(source.urlInfoSet, target.urlInfoSet, config, country, url.searchParams.get("os"));
 		target.muninBucket = GEOResourceManifest.muninBuckets(source.muninBucket, target.muninBucket, config, country);
 		target.displayString = GEOResourceManifest.displayStrings(source.displayString, target.displayString, country);
+		// Keep only the source collections actually selected by the merge while
+		// the protobuf writer allocates its output chunks.
+		source = null;
 		// Each group repeats references to these collections; bound expansion before allocation.
 		if (target.tileGroup.length * (target.tileSet.length + target.attribution.length + target.resource.length) > 200000) return {};
-		target.tileGroup = GEOResourceManifest.tileGroups(target.tileGroup, target.tileSet, target.attribution, target.resource);
+		// These tables are only read by the encoder; sharing is local to this one
+		// response and never exposes a mutable decoded cache across executions.
+		target.tileGroup = GEOResourceManifest.tileGroups(target.tileGroup, target.tileSet, target.attribution, target.resource, true);
 		const body = GEOResourceManifestDownload.encode(target);
 		if (body.length > MAX_OUTPUT_BYTES) return {};
 		if (config.Diagnostics) console.log("MapKit response: merged");

@@ -7,7 +7,7 @@ import { Resources } from "@nsringo/mapkit";
 import ManifestCache from "../src/loon/ManifestCache.mjs";
 import { manifest, manifestURL, memoryStore } from "../test/helpers.mjs";
 
-export async function runBundle(name, { request = { url: manifestURL, method: "GET", headers: {} }, response, store = memoryStore(), argument = {}, get } = {}) {
+export async function runBundle(name, { request = { url: manifestURL, method: "GET", headers: {} }, response, store = memoryStore(), argument = {}, get, synchronous = false, inspect } = {}) {
 	const code = await readFile(`Loon/script/${name}.bundle.js`, "utf8");
 	let count = 0,
 		result,
@@ -38,6 +38,8 @@ export async function runBundle(name, { request = { url: manifestURL, method: "G
 		},
 	});
 	new vm.Script(code).runInContext(context, { timeout: 1500 });
+	if (synchronous) assert.equal(count, 1, "Purely local work must complete synchronously");
+	inspect?.({ count });
 	let timer;
 	try {
 		await Promise.race([
@@ -65,7 +67,8 @@ export default async function verifyLoon() {
 	for (const line of scripts) {
 		assert.match(line, /\$\{url\} ~= /);
 		assert.doesNotMatch(line, /\|\|/);
-		assert.match(line, /https:\/\/raw\.githubusercontent\.com\/hhhoratioxu\/MapKit\/optimized-v1\/Loon\/script\//);
+		const ref = process.env.MAPKIT_RESOURCE_REF || "optimized-v2";
+		assert.ok(line.includes(`https://raw.githubusercontent.com/hhhoratioxu/MapKit/${ref}/Loon/script/`));
 	}
 	const patterns = [...plugin.matchAll(/\$\{url\} ~= (\/.*?\/) then|\$\{url\} ~= (\/.*?\/) &&/g)].map(match => new Function(`return ${match[1] ?? match[2]}`)());
 	for (const pattern of patterns) {
@@ -82,10 +85,25 @@ export default async function verifyLoon() {
 	};
 	await runBundle("request", { store, get });
 	scenarios++;
-	await runBundle("request", { store, get });
+	await runBundle("request", { store, get, synchronous: true });
 	scenarios++;
 	assert.equal(calls, 1);
-	const merged = await runBundle("response", { store, response: { status: 200, headers: { "Content-Type": "application/x-protobuf" }, body: manifest("us") } });
+	const merged = await runBundle("response", { store, synchronous: true, response: { status: 200, headers: { "Content-Type": "application/x-protobuf" }, body: manifest("us") } });
+	scenarios++;
+	let callback;
+	const pending = runBundle("request", {
+		get: (_, cb) => {
+			callback = cb;
+		},
+		inspect: ({ count }) => {
+			assert.equal(count, 0, "HTTP path must await its callback");
+			callback("offline");
+			callback("duplicate");
+		},
+	});
+	await pending;
+	scenarios++;
+	await runBundle("request", { request: { url: "invalid" }, synchronous: true });
 	scenarios++;
 	assert.ok(
 		Resources.fromBinary(merged.body)

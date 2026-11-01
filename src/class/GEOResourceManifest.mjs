@@ -576,28 +576,35 @@ export default class GEOResourceManifest {
 		return target;
 	}
 
-	static tileGroups(tileGroups = [], tileSets = [], attributions = [], resources = []) {
+	static tileGroups(tileGroups = [], tileSets = [], attributions = [], resources = [], shareReferences = false) {
 		Console.log("☑️ Set TileGroups");
-		tileGroups = tileGroups.map(tileGroup => {
+		const makeTiles = () => tileSets.map((tileSet, index) => ({ tileSetIndex: index, identifier: tileSet.validVersion?.[0]?.identifier }));
+		// Loon encodes immediately and never mutates these shared tables. Other
+		// callers retain the original independent-array behavior by default.
+		const sharedTiles = shareReferences && tileGroups.length ? makeTiles() : null;
+		const sharedAttributions = sharedTiles && attributions ? attributions.map((_, index) => index) : null;
+		const sharedResources = sharedTiles && resources ? resources.map((_, index) => index) : null;
+		const update = tileGroup => {
 			Console.debug(`tileGroup.identifier: ${tileGroup.identifier}`);
 			tileGroup.identifier += Math.floor(Math.random() * 100) + 1;
 			Console.debug(`tileGroup.identifier: ${tileGroup.identifier}`);
-			tileGroup.tileSet = tileSets.map((tileSet, index) => {
-				return {
-					tileSetIndex: index,
-					identifier: tileSet.validVersion?.[0]?.identifier,
-				};
-			});
+			tileGroup.tileSet = sharedTiles ?? makeTiles();
 			if (attributions)
-				tileGroup.attributionIndex = attributions.map((attribution, index) => {
-					return index;
-				});
+				tileGroup.attributionIndex =
+					sharedAttributions ??
+					attributions.map((attribution, index) => {
+						return index;
+					});
 			if (resources)
-				tileGroup.resourceIndex = resources.map((resource, index) => {
-					return index;
-				});
+				tileGroup.resourceIndex =
+					sharedResources ??
+					resources.map((resource, index) => {
+						return index;
+					});
 			return tileGroup;
-		});
+		};
+		if (shareReferences) for (const tileGroup of tileGroups) update(tileGroup);
+		else tileGroups = tileGroups.map(update);
 		Console.log("✅ Set TileGroups");
 		return tileGroups;
 	}

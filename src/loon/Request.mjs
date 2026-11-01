@@ -4,7 +4,7 @@ import { bytes, cacheKey, header, MANIFEST_HOSTS, MAX_CACHE_BYTES, manifestURL, 
 import ManifestCache from "./ManifestCache.mjs";
 import settings from "./settings.mjs";
 
-export async function processRequest(request, argument, store, get, now = () => Date.now()) {
+export function processRequest(request, argument, store, get, now = () => Date.now()) {
 	let url;
 	try {
 		url = new URL(request.url);
@@ -26,17 +26,23 @@ export async function processRequest(request, argument, store, get, now = () => 
 	const source = new URL(url.href);
 	source.searchParams.set("country_code", targetCountry === "CN" ? "US" : "CN");
 	const cache = new ManifestCache(store, now);
-	const cached = cache.get(source.href, Math.max(config.StaleHours * 3600, config.CacheTTL));
+	const cached = cache.get(source.href, Math.max(config.StaleHours * 3600, config.CacheTTL), false);
 	const currentTime = now();
-	const fresh = cached?.body && currentTime >= cached.checkedAt && currentTime - cached.checkedAt < config.CacheTTL * 1000;
-	let result = fresh ? "fresh" : "cooldown";
-	if (!fresh && !(cached?.retryAt > currentTime && cached.retryAt <= currentTime + 300000)) {
+	const fresh = cached?.hasBody && currentTime >= cached.checkedAt && currentTime - cached.checkedAt < config.CacheTTL * 1000;
+	const finish = result => {
+		if (config.Diagnostics) console.log(`MapKit request: ${result}`);
+		return { url: url.toString() };
+	};
+	if (fresh || (cached?.retryAt > currentTime && cached.retryAt <= currentTime + 300000)) return finish(fresh ? "fresh" : "cooldown");
+	// Only the network path needs a Promise. Fresh-cache and ignored requests
+	// can finish in the current call and release their script context promptly.
+	return (async () => {
 		const deadline = currentTime + config.TimeoutMs + 100;
 		let fetched;
 		try {
 			fetched = await new Promise(resolve => {
 				let settled = false;
-				get({ url: source.href, headers: requestHeaders(request.headers, cached?.body ? cached.etag : ""), timeout: config.TimeoutMs, "binary-mode": true, "auto-cookie": false, "auto-redirect": false, insecure: false }, (error, response, body) => {
+				get({ url: source.href, headers: requestHeaders(request.headers, cached?.hasBody ? cached.etag : ""), timeout: config.TimeoutMs, "binary-mode": true, "auto-cookie": false, "auto-redirect": false, insecure: false }, (error, response, body) => {
 					if (settled) return;
 					settled = true;
 					resolve({ error, response, body });
@@ -45,12 +51,13 @@ export async function processRequest(request, argument, store, get, now = () => 
 		} catch {
 			fetched = { error: true };
 		}
+		let result;
 		if (now() > deadline) result = "late";
 		else {
 			const status = Number(fetched.response?.status ?? fetched.response?.statusCode);
 			const body = bytes(fetched.body);
 			const type = header(fetched.response?.headers, "content-type").split(";")[0].trim().toLowerCase();
-			if (!fetched.error && status === 304 && cached?.body && cached.etag) {
+			if (!fetched.error && status === 304 && cached?.hasBody && cached.etag) {
 				cache.touch(source.href, cached.generation);
 				result = "revalidated";
 			} else if (!fetched.error && status === 200 && ["application/x-protobuf", "application/protobuf", "application/vnd.google.protobuf", "application/octet-stream"].includes(type) && body?.length <= MAX_CACHE_BYTES && validWire(body)) {
@@ -61,7 +68,6 @@ export async function processRequest(request, argument, store, get, now = () => 
 				result = "failed";
 			}
 		}
-	}
-	if (config.Diagnostics) console.log(`MapKit request: ${result}`);
-	return { url: url.toString() };
+		return finish(result);
+	})();
 }

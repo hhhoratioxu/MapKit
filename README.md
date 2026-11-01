@@ -1,10 +1,10 @@
 #  MapKit · Loon 缓存与性能优化
 
-基于 [NSRingo/MapKit](https://github.com/NSRingo/MapKit) 的原生 Fork，保留 VirgilClyne 与上游贡献者版权、Apache-2.0 许可证和完整 Git 历史。当前优化版本为 **4.6.1-optimized.1**，运行脚本固定在 `optimized-v1`。
+基于 [NSRingo/MapKit](https://github.com/NSRingo/MapKit) 的原生 Fork，保留 VirgilClyne 与上游贡献者版权、Apache-2.0 许可证和完整 Git 历史。当前优化版本为 **4.6.1-optimized.2**，运行脚本固定在 `optimized-v2`。
 
 与本账号 WeatherKit 的发布方式一致，提供独立仓库和一个 Loon 安装入口。
 
-[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.lpx) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.lpx) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v1-lpx/Loon/script/MapKit.lpx)
+[一键导入 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fhhhoratioxu%2FMapKit%2Fmain%2FLoon%2Fscript%2FMapKit.lpx) · [插件订阅直链](https://raw.githubusercontent.com/hhhoratioxu/MapKit/main/Loon/script/MapKit.lpx) · [固定版本](https://raw.githubusercontent.com/hhhoratioxu/MapKit/optimized-v2/Loon/script/MapKit.lpx) · [Release](https://github.com/hhhoratioxu/MapKit/releases/tag/optimized-v2)
 
 ## 安装
 
@@ -12,10 +12,14 @@
 
 若已有其他 MapKit / iRingo Maps 脚本或 Rewrite 版，先停用旧版再启用本版，避免同一清单被重复处理。沿用已有 MitM 证书；首次使用按 [Loon 官方 MitM 文档](https://nsloon.app/docs/MitM/) 完成证书配置。
 
+已有本仓库订阅的用户，更新 `MapKit.lpx` 并重载配置即可；参数和旧缓存继续兼容，无需清空缓存或同时安装两个版本。
+
 默认沿用上游的数据组合：美国资源清单、国内地图/2D 卫星/交通/兴趣点/道路/公共交通，以及国际 3D 卫星、俯瞰和四处看看；地点和导航使用高德，评分与照片使用 Apple。可在插件参数中分别修改。某地区是否有 3D 或四处看看数据，仍取决于 Apple 的覆盖与实际网络。
 
 ## 优化与修复
 
+- 请求阶段直接在缓存字符串上核对 Base64 和 protobuf 边界，不再为命中/304 检查分配整份二进制清单；响应阶段真正需要合成时才解码。完整键、generation、有效期和损坏检查仍保留。
+- Base64 写入复用最多 **8 KiB** 暂存区，避免每三个字节拼接一次字符串；缓存仍采用兼容的 JSON 格式。地图分组在单次编码期间共享只读引用表，减少重复对象；纯本地路径同步完成。
 - 补充地区清单默认缓存 **1 小时**，新鲜缓存期间不发附加请求；过期优先使用 ETag 和 304。目标清单仍由 Apple 正常提供。
 - 单次最多 **1 个串行附加请求**，默认超时 **3500 毫秒**，没有自动重试、轮询或后台刷新。失败后冷却 30 秒；Retry-After 限制在 30–300 秒。
 - 查询失败时，仅使用同主机、同系统、同版本和完整查询参数匹配的有效旧补充清单，默认最长 24 小时。没有可用数据时保留 Apple 原响应。
@@ -27,7 +31,11 @@
 
 ## 验证
 
-本地与 [GitHub Actions 执行日志](https://github.com/hhhoratioxu/MapKit/actions/runs/39284257494) 均确认 **89 项回归测试、12 个编译后脚本场景通过**，包括 400 组瓦片合并布局对比。下载的六个运行资源与本地生成文件逐字节一致。验证过程和状态页差异记录见 [CI 验证记录](docs/ci-validation.json)。完整说明见 [验证与边界](docs/optimization.md)，原始数据见 [工作量测量](docs/work-measurements.json) 与 [构建记录](docs/build-validation.json)。
+内存优化版本地通过 **117 项回归测试、14 个编译后脚本场景**，包括旧缓存兼容、2000 组 Base64/线格式差分、400 组瓦片布局对比，以及正常/异常/同步/异步完成路径。
+
+用上一版与新版实际 bundle 做 **9 个场景、90 个独立 Node/V8 进程**对比，所有场景的输出与持久缓存字节一致。1 MiB 缓存写入场景的进程峰值 RSS 中位数从 **103.0 MiB 降至 69.0 MiB**；2000 瓦片/60 分组合成从 **106.7 MiB 降至 100.9 MiB**。小清单写入存在轻微耗时和 RSS 增加，完整数据与方法见 [内存优化记录](docs/memory-optimization.md) 和 [原始样本](docs/memory-measurements.json)。这些数值包含桌面 Node 进程本身，不是 Loon 内存。
+
+当前构建见 [构建记录](docs/build-validation.json)。第一版的 89 项测试和旧 CI 状态页差异保留在 [历史 CI 验证记录](docs/ci-validation.json)；不会把旧 CI 结果当作新版 CI。原有容量和运行边界见 [优化说明](docs/optimization.md)。
 
 脚本大小检查、Node/V8 测量与模拟接口测试不能代替真实 Loon 解析、iPhone 地图显示、耗电或 VPN 连续运行验收。真实设备验收尚未完成。
 
@@ -40,6 +48,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 npm test
 npm run build:loon
 node scripts/measure-work.mjs
+npm run measure:memory
 ```
 
 重新发布时使用新的不可变版本引用，避免替换已发布运行脚本。`Loon/script/` 只存放一个安装文件、三个必要运行脚本及其许可证和校验值；开发与测试文件位于各自目录。其他客户端目录、云端适配与模板保留为上游源码，本次未声明其优化发布或原生验收。
