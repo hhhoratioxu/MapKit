@@ -8,6 +8,7 @@ on:
 permissions:
   actions: read
   contents: write
+  packages: read
 
 jobs:
   build:
@@ -24,9 +25,10 @@ jobs:
       - name: Publish GitHub Draft Release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: CHANGELOG.md
+          tag_name: stability-v1
+          body_path: docs/stability-v1.md
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            rulesets/*
+            Loon/script/*
             dist/*
           draft: true

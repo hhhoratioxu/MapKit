@@ -6,6 +6,7 @@ on:
 permissions:
   actions: read
   contents: read
+  packages: read
 
 jobs:
   build:
@@ -20,12 +21,19 @@ jobs:
           version: ${{ github.ref_name }}
           keep-v: "false" # If set to "true", will not remove any 'v' prefix from the version number.
           ignore-semver-check: "false" # If set to "true", will not check if the version number is a valid semver version.
-      - name: Run Build Pipeline
-        uses: ./.github/actions/node-build
+      - name: Setup stable Node.js
+        uses: actions/setup-node@v4
         with:
-          package-token: ${{ secrets.PACKAGE_TOKEN }}
-          build-command: npm run build
-          extra-command: npm run build:args
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_TOKEN || github.token }}
+      - name: Build native Loon entry points
+        run: npm run build:loon
+      - name: Run regression tests
+        run: node --test test/*.test.js
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -33,3 +41,5 @@ jobs:
           path: |
             CHANGELOG.md
             dist
+            Loon/script
+            docs/stability-v1.md
