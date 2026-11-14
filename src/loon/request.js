@@ -1,13 +1,5 @@
-// Copyright 2026 hhhoratioxu. SPDX-License-Identifier: Apache-2.0
-import { processRequest } from "./Request.mjs";
-
-let result = {};
-try {
-	result = processRequest($request, typeof $argument === "object" ? $argument : {}, $persistentStore, (options, callback) => $httpClient.get(options, callback));
-} catch {}
-if (result instanceof Promise)
-	result.then(
-		value => $done(value),
-		() => $done({}),
-	);
-else $done(result);
+// Thin Loon adapter: original upstream processing, no fork cache/encoder optimizations.
+import { Request } from "../process/Request.mjs";
+import settings from "./settings.mjs";
+globalThis.$argument = settings(globalThis.$argument);
+Request($request).then(({ $request: request }) => $done(request), () => $done({}));

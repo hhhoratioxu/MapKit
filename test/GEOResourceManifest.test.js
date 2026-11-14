@@ -134,3 +134,38 @@ test("tileStyles 按源地区与设置选择配置分组", () => {
 	assert.deepEqual(GEOResourceManifest.tileStyles(configs, {}, "CN"), ["BASE"]);
 	assert.deepEqual(GEOResourceManifest.tileStyles(configs, {}, "XX"), ["BASE", "MAP", "SATELLITE_2D", "SATELLITE_3D"]);
 });
+
+test("multiple URL sets preserve target metadata and select matching supplemental datasets", () => {
+	const source = [{ dataSet: 2, dispatcherURL: { url: "https://source2.example" } }, { dataSet: 1, dispatcherURL: { url: "https://source1.example" } }];
+	const target = [{ dataSet: 1, marker: "one", dispatcherURL: { url: "https://target1.example" } }, { dataSet: 2, marker: "two", dispatcherURL: { url: "https://target2.example" } }];
+	const before = structuredClone({ source, target });
+	for (const country of ["CN", "US"]) {
+		const result = GEOResourceManifest.urlInfoSets(source, target, { UrlInfoSet: { Dispatcher: country === "CN" ? "Apple" : "AutoNavi" } }, country);
+		assert.deepEqual(result.map(({ dataSet, marker }) => ({ dataSet, marker })), [{ dataSet: 1, marker: "one" }, { dataSet: 2, marker: "two" }]);
+		assert.deepEqual(result.map(item => item.dispatcherURL.url), ["https://source1.example", "https://source2.example"]);
+	}
+	assert.deepEqual({ source, target }, before);
+});
+
+test("missing or empty supplemental endpoints never erase working target endpoints", () => {
+	const keys = ["announcementsURL", "dispatcherURL", "backgroundDispatcherURL", "backgroundRevGeoURL", "batchReverseGeocoderPlaceRequestURL", "directionsURL", "etaURL", "simpleETAURL", "problemSubmissionURL", "problemStatusURL", "problemOptInURL", "feedbackSubmissionURL", "feedbackLookupURL", "polyLocationShiftURL"];
+	const target = [Object.fromEntries(keys.map(key => [key, { url: `https://target.example/${key}` }]))];
+	for (const country of ["CN", "US"]) {
+		const provider = country === "CN" ? "Apple" : "AutoNavi";
+		const settings = { Config: { Announcements: { Environment: country === "CN" ? "XX" : "CN" } }, UrlInfoSet: { Dispatcher: provider, Directions: provider, RAP: provider, LocationShift: provider } };
+		for (const missing of [undefined, null, {}, { url: "" }, { url: "  " }]) {
+			const source = [Object.fromEntries(keys.map(key => [key, missing]))];
+			assert.deepEqual(GEOResourceManifest.urlInfoSets(source, target, settings, country), target);
+		}
+		assert.deepEqual(GEOResourceManifest.urlInfoSets([], target, settings, country), target);
+	}
+});
+
+test("single supplemental fallback keeps target record identity and empty targets stay empty", () => {
+	const source = [{ dispatcherURL: { url: "https://source.example" } }];
+	const target = [{ dataSet: 0, marker: "zero" }, { dataSet: 9, marker: "nine" }];
+	const settings = { UrlInfoSet: { Dispatcher: "AutoNavi" } };
+	const result = GEOResourceManifest.urlInfoSets(source, target, settings, "US");
+	assert.deepEqual(result.map(item => [item.dataSet, item.marker, item.dispatcherURL.url]), [[0, "zero", "https://source.example"], [9, "nine", "https://source.example"]]);
+	assert.deepEqual(GEOResourceManifest.urlInfoSets(source, [], settings, "US"), []);
+});

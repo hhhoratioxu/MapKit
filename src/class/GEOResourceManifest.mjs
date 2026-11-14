@@ -16,7 +16,7 @@ export default class GEOResourceManifest {
 		newRequest.url = newRequest.url.toString();
 		newRequest["binary-mode"] = true;
 		const response = await fetch(newRequest);
-		const rawBody = response.bodyBytes instanceof Uint8Array ? response.bodyBytes : response.bodyBytes ? new Uint8Array(response.bodyBytes) : (response.body ?? new Uint8Array());
+		const rawBody = response.bodyBytes ? new Uint8Array(response.bodyBytes) : (response.body ?? new Uint8Array());
 		Console.log("✅ Download");
 		return { status: response.status ?? response.statusCode ?? 0, eTag: response.headers?.Etag ?? response.headers?.etag, body: rawBody };
 	}
@@ -102,6 +102,7 @@ export default class GEOResourceManifest {
 		let result;
 		if (KV) result = await KV.setItem(`@iRingo.MapKit.Caches.${queryString}`, { eTag, base64 });
 		else {
+			result = Storage.setItem(`@iRingo.MapKit.Caches`, {});
 			result = Storage.setItem(`@iRingo.MapKit.Caches.${queryString}`, { eTag, base64 });
 		}
 		Console.log("✅ Set Cache");
@@ -127,7 +128,7 @@ export default class GEOResourceManifest {
 			let rawBody;
 			switch (true) {
 				case typeof globalThis.Buffer !== "undefined":
-					rawBody = globalThis.Buffer.from(cache.base64, "base64");
+					rawBody = new Uint8Array(globalThis.Buffer.from(cache.base64, "base64"));
 					break;
 				case typeof globalThis.atob === "function": {
 					const binary = globalThis.atob(cache.base64);
@@ -181,7 +182,7 @@ export default class GEOResourceManifest {
 			if (settingCountryCode === sourceCountryCode) tileStyles.push(...group);
 		}
 		const result = [...new Set(tileStyles.filter(tileStyle => typeof tileStyle === "string"))];
-		if (["INFO", "DEBUG", "ALL"].includes(Console.logLevel)) Console.info(`Selected source styles: ${JSON.stringify(result)}`);
+		Console.info(`相对源地区 ${sourceCountryCode} 选入的 tileStyles: ${JSON.stringify(result)}`);
 		Console.log("✅ Set TileStyles");
 		return result;
 	}
@@ -197,27 +198,48 @@ export default class GEOResourceManifest {
 	static tileSets(source = [], target = [], tileStyles = []) {
 		source = Array.isArray(source) ? source : [];
 		target = Array.isArray(target) ? target : [];
-		if (source === target) return target;
-		const styles = new Set((Array.isArray(tileStyles) ? tileStyles : []).filter(style => typeof style === "string"));
-		const groups = new Map();
+		tileStyles = Array.isArray(tileStyles) ? tileStyles : [];
+		for (let index = tileStyles.length - 1; index >= 0; index--) {
+			if (typeof tileStyles[index] !== "string" || tileStyles.indexOf(tileStyles[index]) !== index) tileStyles.splice(index, 1);
+		}
+		const sourceTileStyles = [];
+		const targetTileStyles = [];
 		for (const tile of source) {
-			if (!styles.has(tile?.style)) continue;
-			if (!groups.has(tile.style)) groups.set(tile.style, []);
-			groups.get(tile.style).push(tile);
+			if (typeof tile?.style === "string" && !sourceTileStyles.includes(tile.style)) sourceTileStyles.push(tile.style);
 		}
-		const emitted = new Set(),
-			result = [];
 		for (const tile of target) {
-			const group = groups.get(tile?.style);
-			if (!group) result.push(tile);
-			else if (!emitted.has(tile.style)) {
-				for (const replacement of group) result.push(replacement);
-				emitted.add(tile.style);
-			}
+			if (typeof tile?.style === "string" && !targetTileStyles.includes(tile.style)) targetTileStyles.push(tile.style);
 		}
-		for (const style of styles) if (!emitted.has(style)) for (const tile of groups.get(style) ?? []) result.push(tile);
-		target.length = result.length;
-		for (let i = 0; i < result.length; i++) target[i] = result[i];
+		const sourceExclusiveTileStyles = sourceTileStyles.filter(tileStyle => !targetTileStyles.includes(tileStyle));
+		const targetExclusiveTileStyles = targetTileStyles.filter(tileStyle => !sourceTileStyles.includes(tileStyle));
+		Console.info(`图块集合 source 拥有的 tileStyles: ${JSON.stringify(sourceTileStyles)}`);
+		Console.info(`图块集合 target 拥有的 tileStyles: ${JSON.stringify(targetTileStyles)}`);
+		Console.info(`图块集合 source 独占的 tileStyles: ${JSON.stringify(sourceExclusiveTileStyles)}`);
+		Console.info(`图块集合 target 独占的 tileStyles: ${JSON.stringify(targetExclusiveTileStyles)}`);
+		const modifiedTileStyles = [];
+		const unmodifiedTileStyles = [];
+		for (const tileStyle of tileStyles) {
+			if (source === target || !source.some(tile => tile?.style === tileStyle)) {
+				unmodifiedTileStyles.push(tileStyle);
+				continue;
+			}
+			let targetIndex = target.findIndex(tile => tile?.style === tileStyle);
+			if (targetIndex < 0) targetIndex = target.length;
+			for (let index = target.length - 1; index >= 0; index--) {
+				if (target[index]?.style === tileStyle) target.splice(index, 1);
+			}
+			for (let index = source.length - 1; index >= 0; index--) {
+				if (source[index]?.style === tileStyle) target.splice(targetIndex, 0, source[index]);
+			}
+			modifiedTileStyles.push(tileStyle);
+		}
+		const returnedTargetTileStyles = [];
+		for (const tile of target) {
+			if (typeof tile?.style === "string" && !returnedTargetTileStyles.includes(tile.style)) returnedTargetTileStyles.push(tile.style);
+		}
+		Console.info(`图块集合最终返回的 target tileStyles: ${JSON.stringify(returnedTargetTileStyles)}`);
+		Console.info(`图块集合已修改的 tileStyles: ${JSON.stringify(modifiedTileStyles)}`);
+		Console.info(`图块集合未修改的 tileStyles: ${JSON.stringify(unmodifiedTileStyles)}`);
 		return target;
 	}
 
@@ -387,40 +409,29 @@ export default class GEOResourceManifest {
 		Console.log("☑️ Set UrlInfoSets");
 		source = Array.isArray(source) ? source : [];
 		target = Array.isArray(target) ? target : [];
-		let cnURLInfoSet;
-		let xxURLInfoSet;
-		let urlInfoSets;
-		switch (targetCountryCode) {
-			case "CN":
-				cnURLInfoSet = target[0] ?? {};
-				xxURLInfoSet = source[0] ?? {};
-				urlInfoSets = target.map(() => ({ ...xxURLInfoSet, ...cnURLInfoSet }));
-				break;
-			default:
-				cnURLInfoSet = source[0] ?? {};
-				xxURLInfoSet = target[0] ?? {};
-				urlInfoSets = target.map(() => ({ ...cnURLInfoSet, ...xxURLInfoSet }));
-				/*
-				urlInfoSets = urlInfoSets.map(urlInfoSet => {
-					urlInfoSet.alternateResourcesURL = cnURLInfoSet.alternateResourcesURL;
-					delete urlInfoSet.polyLocationShiftURL;
-					return urlInfoSet;
-				});
-				*/
-				break;
-		}
-		urlInfoSets = urlInfoSets.map(urlInfoSet => {
+		const urlInfoSets = target.map(targetURLInfoSet => {
+			// Keep each target record; prefer the supplemental record for the same dataset.
+			const sourceURLInfoSet = (targetURLInfoSet.dataSet !== undefined
+				? source.find(item => item.dataSet === targetURLInfoSet.dataSet)
+				: undefined) ?? source[0] ?? {};
+			const cnURLInfoSet = targetCountryCode === "CN" ? targetURLInfoSet : sourceURLInfoSet;
+			const xxURLInfoSet = targetCountryCode === "CN" ? sourceURLInfoSet : targetURLInfoSet;
+			const urlInfoSet = { ...sourceURLInfoSet, ...targetURLInfoSet };
+			// An incomplete supplemental manifest must not clear a usable endpoint.
+			const setEndpoint = (key, endpoint) => {
+				if (typeof endpoint?.url === "string" && endpoint.url.trim()) urlInfoSet[key] = endpoint;
+			};
 			switch (settings.Config?.Announcements?.Environment ?? settings.Config?.Announcements?.["Environment:"]?.default ?? settings.Config?.Announcements?.["Environment:"]) {
 				case "AUTO":
 				default:
 					break;
 				case "CN":
 					// Announcements
-					urlInfoSet.announcementsURL = cnURLInfoSet.announcementsURL;
+					setEndpoint("announcementsURL", cnURLInfoSet.announcementsURL);
 					break;
 				case "XX":
 					// Announcements
-					urlInfoSet.announcementsURL = xxURLInfoSet.announcementsURL;
+					setEndpoint("announcementsURL", xxURLInfoSet.announcementsURL);
 					break;
 			}
 			switch (settings.UrlInfoSet.Dispatcher) {
@@ -429,82 +440,82 @@ export default class GEOResourceManifest {
 					break;
 				case "AutoNavi":
 					// PlaceData Dispatcher
-					urlInfoSet.dispatcherURL = cnURLInfoSet.dispatcherURL;
+					setEndpoint("dispatcherURL", cnURLInfoSet.dispatcherURL);
 					// Background Dispatcher
-					urlInfoSet.backgroundDispatcherURL = cnURLInfoSet.backgroundDispatcherURL;
+					setEndpoint("backgroundDispatcherURL", cnURLInfoSet.backgroundDispatcherURL);
 					// Background Reverse Geocoder
-					urlInfoSet.backgroundRevGeoURL = cnURLInfoSet.backgroundRevGeoURL;
+					setEndpoint("backgroundRevGeoURL", cnURLInfoSet.backgroundRevGeoURL);
 					// Batch Reverse Geocoder
-					urlInfoSet.batchReverseGeocoderPlaceRequestURL = cnURLInfoSet.batchReverseGeocoderPlaceRequestURL;
+					setEndpoint("batchReverseGeocoderPlaceRequestURL", cnURLInfoSet.batchReverseGeocoderPlaceRequestURL);
 					break;
 				case "Apple":
 					// PlaceData Dispatcher
-					urlInfoSet.dispatcherURL = xxURLInfoSet.dispatcherURL;
+					setEndpoint("dispatcherURL", xxURLInfoSet.dispatcherURL);
 					// Background Dispatcher
-					urlInfoSet.backgroundDispatcherURL = xxURLInfoSet.backgroundDispatcherURL;
+					setEndpoint("backgroundDispatcherURL", xxURLInfoSet.backgroundDispatcherURL);
 					// Background Reverse Geocoder
-					urlInfoSet.backgroundRevGeoURL = xxURLInfoSet.backgroundRevGeoURL;
+					setEndpoint("backgroundRevGeoURL", xxURLInfoSet.backgroundRevGeoURL);
 					// Batch Reverse Geocoder
-					urlInfoSet.batchReverseGeocoderPlaceRequestURL = xxURLInfoSet.batchReverseGeocoderPlaceRequestURL;
+					setEndpoint("batchReverseGeocoderPlaceRequestURL", xxURLInfoSet.batchReverseGeocoderPlaceRequestURL);
 					break;
 			}
 			switch (settings.UrlInfoSet.Directions) {
 				case "AutoNavi":
 				default:
 					// Directions
-					urlInfoSet.directionsURL = cnURLInfoSet.directionsURL;
+					setEndpoint("directionsURL", cnURLInfoSet.directionsURL);
 					// ETA
-					urlInfoSet.etaURL = cnURLInfoSet.etaURL;
+					setEndpoint("etaURL", cnURLInfoSet.etaURL);
 					// Simple ETA
-					urlInfoSet.simpleETAURL = cnURLInfoSet.simpleETAURL;
+					setEndpoint("simpleETAURL", cnURLInfoSet.simpleETAURL);
 					break;
 				case "Apple":
 					// Directions
-					urlInfoSet.directionsURL = xxURLInfoSet.directionsURL;
+					setEndpoint("directionsURL", xxURLInfoSet.directionsURL);
 					// ETA
-					urlInfoSet.etaURL = xxURLInfoSet.etaURL;
+					setEndpoint("etaURL", xxURLInfoSet.etaURL);
 					// Simple ETA
-					urlInfoSet.simpleETAURL = xxURLInfoSet.simpleETAURL;
+					setEndpoint("simpleETAURL", xxURLInfoSet.simpleETAURL);
 					break;
 			}
 			switch (settings.UrlInfoSet.RAP) {
 				case "AutoNavi":
 					// RAP Submission
-					urlInfoSet.problemSubmissionURL = cnURLInfoSet.problemSubmissionURL;
+					setEndpoint("problemSubmissionURL", cnURLInfoSet.problemSubmissionURL);
 					// RAP Status
-					urlInfoSet.problemStatusURL = cnURLInfoSet.problemStatusURL;
+					setEndpoint("problemStatusURL", cnURLInfoSet.problemStatusURL);
 					// RAP V4 Submission
-					urlInfoSet.feedbackSubmissionURL = cnURLInfoSet.feedbackSubmissionURL;
+					setEndpoint("feedbackSubmissionURL", cnURLInfoSet.feedbackSubmissionURL);
 					// RAP V4 Lookup
-					urlInfoSet.feedbackLookupURL = cnURLInfoSet.feedbackLookupURL;
+					setEndpoint("feedbackLookupURL", cnURLInfoSet.feedbackLookupURL);
 					break;
 				case "Apple":
 				default:
 					// RAP Submission
-					urlInfoSet.problemSubmissionURL = xxURLInfoSet.problemSubmissionURL;
+					setEndpoint("problemSubmissionURL", xxURLInfoSet.problemSubmissionURL);
 					// RAP Status
-					urlInfoSet.problemStatusURL = xxURLInfoSet.problemStatusURL;
+					setEndpoint("problemStatusURL", xxURLInfoSet.problemStatusURL);
 					// RAP Opt-Ins
-					urlInfoSet.problemOptInURL = xxURLInfoSet.problemOptInURL;
+					setEndpoint("problemOptInURL", xxURLInfoSet.problemOptInURL);
 					// RAP V4 Submission
-					urlInfoSet.feedbackSubmissionURL = xxURLInfoSet.feedbackSubmissionURL;
+					setEndpoint("feedbackSubmissionURL", xxURLInfoSet.feedbackSubmissionURL);
 					// RAP V4 Lookup
-					urlInfoSet.feedbackLookupURL = xxURLInfoSet.feedbackLookupURL;
+					setEndpoint("feedbackLookupURL", xxURLInfoSet.feedbackLookupURL);
 					break;
 			}
 			switch (settings.UrlInfoSet.LocationShift) {
 				case "AUTO":
 					// watchOS 使用国际版定位，其余系统使用中国版定位。
-					urlInfoSet.polyLocationShiftURL = os === "watchos" ? xxURLInfoSet.polyLocationShiftURL : cnURLInfoSet.polyLocationShiftURL;
+					setEndpoint("polyLocationShiftURL", os === "watchos" ? xxURLInfoSet.polyLocationShiftURL : cnURLInfoSet.polyLocationShiftURL);
 					break;
 				case "AutoNavi":
 				default:
 					// Location Shift (polynomial)
-					urlInfoSet.polyLocationShiftURL = cnURLInfoSet.polyLocationShiftURL;
+					setEndpoint("polyLocationShiftURL", cnURLInfoSet.polyLocationShiftURL);
 					break;
 				case "Apple":
 					// Location Shift (polynomial)
-					urlInfoSet.polyLocationShiftURL = xxURLInfoSet.polyLocationShiftURL;
+					setEndpoint("polyLocationShiftURL", xxURLInfoSet.polyLocationShiftURL);
 					break;
 			}
 			return urlInfoSet;
@@ -576,35 +587,28 @@ export default class GEOResourceManifest {
 		return target;
 	}
 
-	static tileGroups(tileGroups = [], tileSets = [], attributions = [], resources = [], shareReferences = false) {
+	static tileGroups(tileGroups = [], tileSets = [], attributions = [], resources = []) {
 		Console.log("☑️ Set TileGroups");
-		const makeTiles = () => tileSets.map((tileSet, index) => ({ tileSetIndex: index, identifier: tileSet.validVersion?.[0]?.identifier }));
-		// Loon encodes immediately and never mutates these shared tables. Other
-		// callers retain the original independent-array behavior by default.
-		const sharedTiles = shareReferences && tileGroups.length ? makeTiles() : null;
-		const sharedAttributions = sharedTiles && attributions ? attributions.map((_, index) => index) : null;
-		const sharedResources = sharedTiles && resources ? resources.map((_, index) => index) : null;
-		const update = tileGroup => {
+		tileGroups = tileGroups.map(tileGroup => {
 			Console.debug(`tileGroup.identifier: ${tileGroup.identifier}`);
 			tileGroup.identifier += Math.floor(Math.random() * 100) + 1;
 			Console.debug(`tileGroup.identifier: ${tileGroup.identifier}`);
-			tileGroup.tileSet = sharedTiles ?? makeTiles();
+			tileGroup.tileSet = tileSets.map((tileSet, index) => {
+				return {
+					tileSetIndex: index,
+					identifier: tileSet.validVersion?.[0]?.identifier,
+				};
+			});
 			if (attributions)
-				tileGroup.attributionIndex =
-					sharedAttributions ??
-					attributions.map((attribution, index) => {
-						return index;
-					});
+				tileGroup.attributionIndex = attributions.map((attribution, index) => {
+					return index;
+				});
 			if (resources)
-				tileGroup.resourceIndex =
-					sharedResources ??
-					resources.map((resource, index) => {
-						return index;
-					});
+				tileGroup.resourceIndex = resources.map((resource, index) => {
+					return index;
+				});
 			return tileGroup;
-		};
-		if (shareReferences) for (const tileGroup of tileGroups) update(tileGroup);
-		else tileGroups = tileGroups.map(update);
+		});
 		Console.log("✅ Set TileGroups");
 		return tileGroups;
 	}
