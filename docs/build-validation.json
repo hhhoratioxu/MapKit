@@ -1,7 +1,7 @@
 {
-  "version": "4.6.1-stability.1",
-  "resourceRef": "stability-v1",
-  "baseCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
+  "version": "4.6.1-db.20261114",
+  "resourceRef": "db-20261114",
+  "baseCommit": "89133d3c557b35b4003aa893aad058e10a60532f",
   "upstreamCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
   "node": "v24.22.1",
   "schemaPackage": "1.1.3",

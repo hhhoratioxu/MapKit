@@ -1,4 +1,4 @@
-#!name =  MapKit · 服务地址修复
+#!name = MapKit
 #!desc = 基于 NSRingo/MapKit 原版；修复多组服务资料覆盖与缺失地址清空。未恢复旧缓存与编码优化。
 #!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
 #!homepage = https://github.com/hhhoratioxu/MapKit
@@ -8,7 +8,7 @@
 #!system_version = 15
 #!loon_version = 3.5.1(983)
 #!date = 2026-11-14
-#!version = 4.6.1-stability.1
+#!version = 4.6.1-db.20261114
 
 [Argument]
 CountryCode = select,"US","AUTO","CN","HK","TW","SG","JP","AU","GB","KR","CA","IE",type=string,tag=清单地区,desc=AUTO 保留 Apple 请求地区；KR 不包含独立韩国瓦片合成
@@ -33,10 +33,10 @@ request if ${url} ~= /^https:\/\/configuration\.ls\.apple\.com\/config\/defaults
 request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ then request.header.del(["If-None-Match", "If-Modified-Since"])
 
 [Script]
-request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/stability-v1/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with timeout=8, tag="MapKit manifest request"
-request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/stability-v1/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with timeout=8, tag="MapKit announcements"
-response if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/stability-v1/Loon/script/response.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with requires_body=true, binary_body_mode=true, timeout=8, tag="MapKit manifest response"
-response if ${url} ~= /^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/stability-v1/Loon/script/defaults.bundle.js") with requires_body=true, timeout=5, tag="MapKit defaults"
+request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/db-20261114/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with timeout=8, tag="MapKit manifest request"
+request if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/ && ${request.method} == "GET" then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/db-20261114/Loon/script/request.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with timeout=8, tag="MapKit announcements"
+response if ${url} ~= /^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/db-20261114/Loon/script/response.bundle.js", {${CountryCode}, ${Environment}, ${Dispatcher}, ${Directions}, ${RAP}, ${LocationShift}, ${Map}, ${Satellite2D}, ${Satellite3D}, ${Traffic}, ${POI}, ${Flyover}, ${Munin}, ${Road}, ${Earth}, ${Transit}}) with requires_body=true, binary_body_mode=true, timeout=8, tag="MapKit manifest response"
+response if ${url} ~= /^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/ && ${request.method} == "GET" && ${response.status} == 200 then script("https://raw.githubusercontent.com/hhhoratioxu/MapKit/db-20261114/Loon/script/defaults.bundle.js") with requires_body=true, timeout=5, tag="MapKit defaults"
 
 [MITM]
 hostname = configuration.ls.apple.com, gspe35-ssl.ls.apple.com, gspe35-ssl.ls.apple.cn

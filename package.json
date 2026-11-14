@@ -1,7 +1,7 @@
 {
 	"name": "@iringo/geoservices",
 	"organizationName": " iRingo",
-	"displayName": " iRingo: 🗺️ Maps",
+	"displayName": "MapKit",
 	"description": "自定义 Maps app\n添加国际版功能\n自定义服务版本",
 	"homepage": "https://NSRingo.github.io/guide/GeoServices/maps",
 	"openUrl": "http://boxjs.com/#/app/iRingo.Maps",
@@ -71,5 +71,5 @@
 			"puppeteer": "25.7.0"
 		}
 	},
-	"version": "4.6.1-stability.1"
+	"version": "4.6.1-db.20261114"
 }

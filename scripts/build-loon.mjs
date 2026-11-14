@@ -28,7 +28,7 @@ const arg = `{${parameters.map(([key]) => `\u0024{${key}}`).join(", ")}}`;
 const manifestPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/`;
 const announcementPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/`;
 const defaultsPattern = String.raw`/^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/`;
-const plugin = `#!name =  MapKit · 服务地址修复
+const plugin = `#!name = ${pkg.displayName}
 #!desc = 基于 NSRingo/MapKit 原版；修复多组服务资料覆盖与缺失地址清空。未恢复旧缓存与编码优化。
 #!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
 #!homepage = https://github.com/hhhoratioxu/MapKit
