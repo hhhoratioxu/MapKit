@@ -14,3 +14,7 @@ Test: node --test test/*.test.js
 Validation: 14 tests pass, including compiled Loon-bundle object arguments, binary manifests, preservation of both distinct URL sets and working endpoints, and failure passthrough. Native Mac Apple Maps successfully searched Shanghai Hongqiao Railway Station under the already-installed configuration. That smoke test does NOT prove the newly built scripts were installed or tested in Loon. Loon VPN/configuration was not changed.
 
 Do not force-update optimized-v3. To opt into the new scripts, update the plugin explicitly after reviewing it. This change does not deploy to the active Mac Loon configuration.
+
+## Later device check
+
+The initial build-only status above was followed by an owner-approved Mac plugin update and enablement. See [the actual Mac Loon / Apple Maps report](mac-loon-validation-2026-11-14.md) for observed search/routing results and the remaining lack of per-request manifest execution proof.
