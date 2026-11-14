@@ -39,3 +39,17 @@ https://github.com/hhhoratioxu/MapKit/actions/runs/43537396062
 - The displayed script URLs and enabled state prove plugin configuration, not execution of every script.
 - No iPhone test, memory/battery benchmark, prolonged VPN-stability test, or satellite/Look Around coverage test was performed.
 - Current outcome: updated plugin enabled; search and route UI smoke checks passed. Full manifest execution tracing remains unverified.
+
+## Follow-up attempt: execution tracing and overseas 3D
+
+A later verification pass was authorized to check fresh manifest/script execution, actual source endpoints, and overseas satellite 3D/Look Around without changing the existing region/provider selections.
+
+- Opening the Loon UI through the connected computer-control tool timed out after approximately 34 seconds and reset its session.
+- A single retry targeting Apple Maps also timed out at 60 seconds.
+- No UI interaction was performed in this follow-up attempt. No Maps restart, plugin change, VPN change, extra permission, or network configuration change was made.
+- A separate read-only system query still reported Loon VPN **Connected**.
+
+Therefore this pass could not verify fresh manifest execution, actual tile/service endpoints, overseas 3D rendering, or Look Around. This is a **computer-control access limitation**, not evidence that MapKit, Loon, or Apple Maps failed. The earlier successful search/routing smoke-test observations remain as recorded, with their original limits. No further code changes were justified by these timeouts.
+
+Project-purpose reference: https://iringo.nanocat.cloud/guide/GeoServices/map-kit
+The project's purpose is to combine mainland mapping services with international features. Branding disappearing is not proof of the selected data source. Ordinary building 3D, satellite 3D, Flyover and Look Around are distinct; a missing Flyover button with a mainland dispatcher is not on its own proof of a defect. Future verification must use observable script/request and manifest evidence, not just map appearance.
