@@ -1,0 +1,174 @@
+{
+  "date": "2026-11-14",
+  "timezone": "UTC+08:00",
+  "sourceCommitBeforeDocumentation": "dc8fccd45cbf7824bdd432692ea851c2714ee964",
+  "runtimeVersion": "4.6.1-stability.1",
+  "stableTagCommit": "4865a9369159fbcfd4afee00918fd997c70908e2",
+  "evidenceScope": "Selected UI observations and read-only native records; no private profiles, raw traffic bodies, IPs, node names, credentials, or private locations included.",
+  "configurationSnapshots": {
+    "classification": "configuration-state dump, not newly issued HTTP requests",
+    "exampleTimes": [
+      "09:54:44.217",
+      "09:58:39.137"
+    ],
+    "manifestIdentifier": {
+      "host": "gspe35-ssl.ls.apple.com",
+      "path": "/geo_manifest/dynamic/config",
+      "query": {
+        "country_code": "CN",
+        "os": "osx",
+        "os_version": "27.3:2611122:13:scl=1,2"
+      }
+    },
+    "defaultsSourceDescription": "Default [Baked-in]",
+    "freshMapsHttpRequestProven": false
+  },
+  "preHttpTlsSessions": [
+    {
+      "time": "2026-11-14T09:25:54.034000+08:00",
+      "publicHost": "gspe35-ssl.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    },
+    {
+      "time": "2026-11-14T09:26:00.870000+08:00",
+      "publicHost": "configuration.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    },
+    {
+      "time": "2026-11-14T09:41:10.043000+08:00",
+      "publicHost": "configuration.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    },
+    {
+      "time": "2026-11-14T09:56:19.894000+08:00",
+      "publicHost": "configuration.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    },
+    {
+      "time": "2026-11-14T09:56:26.639000+08:00",
+      "publicHost": "configuration.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    },
+    {
+      "time": "2026-11-14T09:56:31.937000+08:00",
+      "publicHost": "configuration.ls.apple.com",
+      "httpStatus": 0,
+      "hasScript": false,
+      "useMitm": true,
+      "clientDisconnectedBeforeTlsCompleted": true,
+      "processAttribution": "geod UI row confirmed for 09:26:00.870; other rows not independently attributed"
+    }
+  ],
+  "manualHttpControls": [
+    {
+      "client": "curl control, not Maps",
+      "path": "/config/defaults",
+      "curlExit": 0,
+      "httpStatus": 400,
+      "sslVerifyResult": 0,
+      "bytes": 0,
+      "seconds": 0.277053,
+      "certificateTrustFailure": false,
+      "started": "2026-11-14T10:13:06.194426+08:00"
+    },
+    {
+      "client": "curl control, not Maps",
+      "path": "/geo_manifest/dynamic/config",
+      "curlExit": 0,
+      "httpStatus": 400,
+      "sslVerifyResult": 0,
+      "bytes": 0,
+      "seconds": 0.614814,
+      "certificateTrustFailure": false,
+      "started": "2026-11-14T10:13:19.913734+08:00",
+      "query": {
+        "country_code": "CN",
+        "os": "osx",
+        "os_version": "27.3:2611122:13:scl=1,2"
+      }
+    }
+  ],
+  "manualControlScriptRecords": [
+    {
+      "tag": "MapKit manifest request",
+      "started": "2026-11-14T10:13:20.030000+08:00",
+      "elapsedMs": 292,
+      "finished": true,
+      "exceptionReported": false,
+      "origin": "explicit curl control, not Maps",
+      "configuredResourceRef": "stability-v1",
+      "executedBytesIndependentlyVerified": false,
+      "scriptLogSummary": [
+        "CN supplemental cache miss",
+        "supplemental download HTTP 400",
+        "normal completion"
+      ]
+    }
+  ],
+  "uiResults": {
+    "mapkitEnabledObserved": true,
+    "fourConfiguredScriptRefs": "stability-v1",
+    "existing16ArgumentsRetained": true,
+    "ParisFranceResolved": true,
+    "satelliteTiltControlVisible": true,
+    "satelliteTexturesAndPhotogrammetryRendered": false,
+    "LookAroundImageryVerified": false,
+    "NewYorkChecked": false,
+    "newDomesticRouteCalculatedInThisContinuation": false,
+    "MapsColdStartEstablished": false,
+    "automationLimits": [
+      "Dashboard request-detail read timed out",
+      "Dashboard retry timed out",
+      "Maps menu element became invalid",
+      "Maps coordinate input reported noWindowsAvailable"
+    ],
+    "uiOperationsEnded": true
+  },
+  "regression": {
+    "command": "node --test test/*.test.js",
+    "passed": 14,
+    "failed": 0,
+    "runtimeSourceChanged": false,
+    "stableRuntimeFilesChanged": false,
+    "trackedRequestBundleSHA256": "93c35106b3369eb3336eec422b003ccd229b12b7cb167a1fdfeaa7dd78d8f8c1"
+  },
+  "vpnFinalObservation": {
+    "status": "Connected",
+    "observedAt": "2026-11-14T10:21:29.241606+08:00",
+    "continuousTelemetry": false
+  },
+  "acceptance": {
+    "nativeMapsSuccessfulManifestResponseProven": false,
+    "defaultsResponseExecutionProven": false,
+    "manifestResponseExecutionProven": false,
+    "bothUrlInfoSetFixesExercisedOnDevice": false,
+    "remaining": [
+      "successful Maps TLS and HTTP 200 configuration exchange",
+      "correlated defaults/manifest response-script records",
+      "fresh domestic search/route",
+      "Paris and New York satellite textures and 3D buildings",
+      "actual Look Around imagery"
+    ],
+    "newRuntimeCodeFixJustified": false
+  }
+}
