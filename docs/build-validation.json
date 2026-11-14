@@ -1,11 +1,11 @@
 {
-  "version": "4.6.1-stability.1",
+  "version": "4.6.2",
   "resourceRef": "stability-v1",
-  "baseCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
+  "baseCommit": "89133d3c557b35b4003aa893aad058e10a60532f",
   "upstreamCommit": "c9af737d97c0b3e26bc2f1083e36564da1b05ba4",
   "node": "v24.22.1",
   "schemaPackage": "1.1.3",
-  "lockfileSHA256": "a508f4d92ff5674541e4ceadb42d471d1c064aab29dec869a0c76f909e722dea",
+  "lockfileSHA256": "301715c7dd4934e3a2e63bfb97c83bdabb967ad5a04431187087617c993074fb",
   "checks": {
     "scope": "See test/loon-bundle.test.js; automated, not installed-device acceptance"
   }

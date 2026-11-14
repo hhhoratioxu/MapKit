@@ -129,7 +129,7 @@ export async function Request($request, KV) {
 										const cacheURL = new URL(url.toString());
 										const requestCountryCode = cacheCountryCode === "XX" ? "US" : cacheCountryCode;
 										cacheURL.searchParams.set("country_code", requestCountryCode);
-										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV);
+										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV, true);
 										let response;
 										if (cache?.eTag) {
 											response = await GEOResourceManifest.download({ ...request, headers: { ...request.headers, "If-None-Match": cache.eTag } }, requestCountryCode);
@@ -155,7 +155,7 @@ export async function Request($request, KV) {
 										const cacheURL = new URL(url.toString());
 										const requestCountryCode = cacheCountryCode === "XX" ? "US" : cacheCountryCode;
 										cacheURL.searchParams.set("country_code", requestCountryCode);
-										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV);
+										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV, true);
 										let response;
 										if (cache?.eTag) {
 											response = await GEOResourceManifest.download({ ...request, headers: { ...request.headers, "If-None-Match": cache.eTag } }, requestCountryCode);
@@ -180,7 +180,7 @@ export async function Request($request, KV) {
 									for (const cacheCountryCode of ["CN"]) {
 										const cacheURL = new URL(url.toString());
 										cacheURL.searchParams.set("country_code", cacheCountryCode);
-										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV);
+										const cache = await GEOResourceManifest.getCache(Caches, cacheURL.search, KV, true);
 										let response;
 										if (cache?.eTag) {
 											response = await GEOResourceManifest.download({ ...request, headers: { ...request.headers, "If-None-Match": cache.eTag } }, cacheCountryCode);

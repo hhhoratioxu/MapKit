@@ -9,7 +9,7 @@ import { tileDefaults } from "../src/loon/settings.mjs";
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
 const schema = JSON.parse(await readFile("node_modules/@nsringo/mapkit/package.json", "utf8"));
 if (schema.version !== "1.1.3") throw new Error("Expected the original locked MapKit 1.1.3 schema");
-const ref = process.env.MAPKIT_RESOURCE_REF || "stability-v1";
+const ref = process.env.MAPKIT_RESOURCE_REF || pkg.resourceRef || "stability-v1";
 if (!/^[A-Za-z0-9._-]+$/.test(ref)) throw new Error("Invalid resource ref");
 const base = `https://raw.githubusercontent.com/hhhoratioxu/MapKit/${ref}/Loon/script`;
 const parameters = [
@@ -28,17 +28,17 @@ const arg = `{${parameters.map(([key]) => `\u0024{${key}}`).join(", ")}}`;
 const manifestPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/geo_manifest\/dynamic\/config(?:\?|$)/`;
 const announcementPattern = String.raw`/^https:\/\/gspe35-ssl\.ls\.apple\.(?:com|cn)\/config\/announcements(?:\?|$)/`;
 const defaultsPattern = String.raw`/^https:\/\/configuration\.ls\.apple\.com\/config\/defaults(?:\?|$)/`;
-const plugin = `#!name =  MapKit · 服务地址修复
-#!desc = 基于 NSRingo/MapKit 原版；修复多组服务资料覆盖与缺失地址清空。未恢复旧缓存与编码优化。
+const plugin = `#!name = ${pkg.displayName}
+#!desc = ${pkg.system.join(" & ")}\\n${pkg.description.replace(/\r?\n/g, "\\n")}
 #!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
 #!homepage = https://github.com/hhhoratioxu/MapKit
 #!icon = https://developer.apple.com/assets/elements/icons/maps/maps-128x128.png
-#!tag = iRingo,MapKit
-#!system = iOS,iPadOS,macOS
-#!system_version = 15
-#!loon_version = 3.5.1(983)
-#!date = 2026-11-14
+#!tag = ${pkg.organizationName}
+#!system = ${pkg.system.join(",")}
+#!date = ${pkg.buildDate}
 #!version = ${pkg.version}
+#!system_version = ${pkg.systemVersion}
+#!loon_version = 3.5.1(983)
 
 [Argument]
 ${parameters.map(([key, value]) => `${key} = ${value}`).join("\n")}

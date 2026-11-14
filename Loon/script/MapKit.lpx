@@ -1,14 +1,14 @@
-#!name =  MapKit · 服务地址修复
-#!desc = 基于 NSRingo/MapKit 原版；修复多组服务资料覆盖与缺失地址清空。未恢复旧缓存与编码优化。
+#!name = MapKit
+#!desc = iOS & iPadOS & macOS\n1.自定义地图地区与服务\n2.选择 2D 和 3D 卫星图源\n3.选择导航、路况与兴趣点数据\n4.选择 Flyover 与四处看看图源
 #!author = VirgilClyne[https://github.com/VirgilClyne],hhhoratioxu[https://github.com/hhhoratioxu]
 #!homepage = https://github.com/hhhoratioxu/MapKit
 #!icon = https://developer.apple.com/assets/elements/icons/maps/maps-128x128.png
-#!tag = iRingo,MapKit
+#!tag =  iRingo
 #!system = iOS,iPadOS,macOS
+#!date = 2026-11-14 23:34:17
+#!version = 4.6.2
 #!system_version = 15
 #!loon_version = 3.5.1(983)
-#!date = 2026-11-14
-#!version = 4.6.1-stability.1
 
 [Argument]
 CountryCode = select,"US","AUTO","CN","HK","TW","SG","JP","AU","GB","KR","CA","IE",type=string,tag=清单地区,desc=AUTO 保留 Apple 请求地区；KR 不包含独立韩国瓦片合成

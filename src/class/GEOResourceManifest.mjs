@@ -1,5 +1,6 @@
 import { Console, fetch, Storage } from "@nsnanocat/util";
 import GEOResourceManifestDownload from "./GEOResourceManifestDownload.mjs";
+import validateManifestCache from "./validateManifestCache.mjs";
 export default class GEOResourceManifest {
 	/**
 	 * 下载资源清单二进制。
@@ -15,10 +16,17 @@ export default class GEOResourceManifest {
 		newRequest.url.searchParams.set("country_code", countryCode === "XX" ? "US" : countryCode);
 		newRequest.url = newRequest.url.toString();
 		newRequest["binary-mode"] = true;
-		const response = await fetch(newRequest);
+		let response;
+		try {
+			response = await fetch(newRequest);
+		} catch {
+			// A failed supplemental download must leave the main manifest request usable.
+			return { status: 0, eTag: undefined, body: new Uint8Array() };
+		}
 		const rawBody = response.bodyBytes ? new Uint8Array(response.bodyBytes) : (response.body ?? new Uint8Array());
+		const eTagKey = Object.keys(response.headers ?? {}).find(key => key.toLowerCase() === "etag");
 		Console.log("✅ Download");
-		return { status: response.status ?? response.statusCode ?? 0, eTag: response.headers?.Etag ?? response.headers?.etag, body: rawBody };
+		return { status: response.status ?? response.statusCode ?? 0, eTag: eTagKey === undefined ? undefined : response.headers[eTagKey], body: rawBody };
 	}
 
 	/**
@@ -27,9 +35,10 @@ export default class GEOResourceManifest {
 	 * @param {object} caches 缓存对象 / Cache object.
 	 * @param {string} queryString 查询字符串（包含前导问号） / Query string with leading question mark.
 	 * @param {object} KV Shared KV storage instance.
+	 * @param {boolean} validateBody 发送条件请求前验证缓存正文 / Validate the body before conditional revalidation.
 	 * @returns {Promise<{eTag?: string, base64?: string}|undefined>} 缓存条目 / Cache entry.
 	 */
-	static async getCache(caches = {}, queryString = "", KV) {
+	static async getCache(caches = {}, queryString = "", KV, validateBody = false) {
 		Console.log("☑️ Get Cache");
 		if (!queryString) {
 			Console.error("Get Cache", "Missing query string");
@@ -40,6 +49,10 @@ export default class GEOResourceManifest {
 		else cache = Storage.getItem(`@iRingo.MapKit.Caches.${queryString}`);
 		switch (typeof cache?.base64) {
 			case "string":
+				if (validateBody && !GEOResourceManifest.readCacheEntry(cache, validateManifestCache)) {
+					Console.warn("Get Cache", "Invalid cached manifest; skip conditional revalidation");
+					return undefined;
+				}
 				Console.log("✅ Get Cache");
 				return cache;
 			case "undefined":
@@ -120,8 +133,20 @@ export default class GEOResourceManifest {
 	static async decodeCache(caches = {}, queryString = "", KV) {
 		Console.log("☑️ Decode Cache");
 		const cache = await GEOResourceManifest.getCache(caches, queryString, KV);
+		const body = GEOResourceManifest.decodeCacheEntry(cache);
+		if (body) Console.log("✅ Decode Cache");
+		return body;
+	}
+
+	/** Decode one entry without reading, writing or deleting persistent storage. */
+	static decodeCacheEntry(cache) {
+		return GEOResourceManifest.readCacheEntry(cache, bytes => GEOResourceManifestDownload.decode(bytes));
+	}
+
+	/** Share the existing Base64 decoding between preflight and full response decoding. */
+	static readCacheEntry(cache, read) {
 		if (!cache?.base64) {
-			Console.error("Decode Cache", `Missing cache: ${queryString}`);
+			Console.warn("Decode Cache", "Missing or empty cache body");
 			return undefined;
 		}
 		try {
@@ -140,15 +165,13 @@ export default class GEOResourceManifest {
 					throw new Error("Unsupported base64 decoder");
 			}
 			if (!rawBody?.length) {
-				Console.error("Decode Cache", `Empty body: ${queryString}`);
+				Console.warn("Decode Cache", "Empty cache body");
 				return undefined;
 			}
-			const body = GEOResourceManifestDownload.decode(rawBody);
-			Console.log("✅ Decode Cache");
-			return body;
+			return read(rawBody);
 		} catch (error) {
 			Console.error(error);
-			Console.error("Decode Cache", `Decode failed: ${queryString}`);
+			Console.warn("Decode Cache", "Invalid cached manifest");
 			return undefined;
 		}
 	}
